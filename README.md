@@ -48,3 +48,25 @@
 5. 标签管理接口：负责对标签进行增删改查等操作。
 6. 数据分析接口：负责执行各种数据分析操作，并将分析结果返回给前端。
 7. 数据可视化接口：负责将医疗数据和分析结果可视化展示给用户。
+
+
+
+#### 4. 项目启动
+
+###### Project setup
+
+```
+yarn
+```
+
+###### Compiles and hot-reloads for development
+
+```
+yarn dev
+```
+
+###### Compiles and minifies for production
+
+```
+yarn build
+```
