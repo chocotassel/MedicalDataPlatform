@@ -2,7 +2,7 @@ import React from 'react'
 
 function FileList() {
   return (
-    <div>FileList</div>
+    <div className='w-1/6'>FileList</div>
   )
 }
 

@@ -2,7 +2,7 @@ import React from 'react'
 
 function Toolbar() {
   return (
-    <div>Toolbar</div>
+    <div className='w-1/6'>Toolbar</div>
   )
 }
 
