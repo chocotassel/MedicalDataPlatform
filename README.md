@@ -29,6 +29,7 @@
   - Redux
   - React-Router
   - Three.js
+  - Tailwind css
 - 后端：
   - Python
   - Flask
