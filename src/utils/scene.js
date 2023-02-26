@@ -54,7 +54,7 @@ scene.add(cube)
 
 
 //初始化渲染器
-const renderer = new THREE.WebGL1Renderer()
+const renderer = new THREE.WebGLRenderer()
 renderer.setSize(500 , 500)
 
 //将webgl渲染的canves内容添加到body
