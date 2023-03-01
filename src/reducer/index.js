@@ -1,3 +1,3 @@
-exports.reducer = (state, action) => {
+export const reducer = (state, action) => {
   return state;
 }
