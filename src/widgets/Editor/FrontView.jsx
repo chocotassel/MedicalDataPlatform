@@ -1,43 +1,39 @@
 import React, { useEffect } from 'react'
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-function MainView() {
-  const containerRef = React.createRef()
-  const controlsRef = React.createRef()
+function FrontView(props) {
+  const container = React.createRef()
 
-  const scene = new THREE.Scene()
-  const camera = new THREE.PerspectiveCamera(
-    75,   //角度
-    500 / 500,
-    0.1,  //近端
-    1000  //远端
-  )
-  camera.position.set(0, 0, 10)
-  camera.lookAt(scene.position)
-  const renderer = new THREE.WebGLRenderer()
-  renderer.setClearColor(new THREE.Color(0xeeeeee))
-  renderer.setSize(500, 500)
-  renderer.shadowMap.enabled = true
-
+  // 加载切片
   useEffect(() => {
-    function renderScene() {
-      requestAnimationFrame(renderScene)
-      renderer.render(scene, camera)
-    }
-    renderScene()
+    // console.log(props.niftiImage);
+    if ( props.niftiImage != null ) {
 
-    if (containerRef.current) {
-      controlsRef.current = new OrbitControls(camera, containerRef.current)
-      controlsRef.current.enableDamping = true
-      controlsRef.current.enableZoom = true
-      controlsRef.current.enablePan = true
+      const { xSize, y, zSize, niftiImage } = props;
+      const ctx = container.current.getContext('2d');
+      container.current.width = xSize;
+      container.current.height = zSize;
+
+      const imageData2 = ctx.createImageData(xSize, zSize);
+      for (let x = 0; x < xSize; x++) {
+        for (let z = 0; z < zSize; z++) {
+          const value = niftiImage[x][y][z];
+          const alpha = 255;
+          imageData2.data[(x + z * xSize) * 4 + 0] = value >> 8;
+          imageData2.data[(x + z * xSize) * 4 + 1] = value & 0xff;
+          imageData2.data[(x + z * xSize) * 4 + 2] = 0;
+          imageData2.data[(x + z * xSize) * 4 + 3] = alpha;
+        }
+      }
+      ctx.putImageData(imageData2, 0, 0);
     }
-    containerRef.current.appendChild(renderer.domElement)
-  }, [])
+  }, [props.niftiImage, props.y])
+
+
   return (
-    <div className='border-2' ref={containerRef}></div>
+    <div className='border-2'>
+      <canvas ref={container}></canvas>
+    </div>
   )
 }
 
-export default MainView
+export default FrontView

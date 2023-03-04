@@ -9,8 +9,8 @@ const imgList = []
 function MainView() {
   const [z, setZ] = React.useState(0)
 
-  const containerRef = React.createRef()
-  const controlsRef = React.createRef()
+  const container = React.createRef()
+  const controls= React.createRef()
 
   // 场景和相机
   const scene = new THREE.Scene()
@@ -65,20 +65,77 @@ function MainView() {
     }
     renderScene()
 
-    if (containerRef.current) {
-      controlsRef.current = new OrbitControls(camera, containerRef.current)
-      controlsRef.current.enableDamping = true
-      controlsRef.current.enableZoom = true
-      controlsRef.current.enablePan = true
+    if (container.current) {
+      controls.current = new OrbitControls(camera, container.current)
+      controls.current.enableDamping = true
+      controls.current.enableZoom = true
+      controls.current.enablePan = true
     }
-    containerRef.current.appendChild(renderer.domElement)
+    container.current.appendChild(renderer.domElement)
 
+      //   // 读取NIfTI文件头信息
+      //   const header = nifti.readHeader(arrayBuffer);
+
+      //   // 读取nifti文件的图像数据
+      //   const imageData = nifti.readImage(header, arrayBuffer);
+
+      //   // 将ArrayBuffer类型的图像数据转换为Int16Array类型的图像数据
+      //   const imageTypedArray = new Int8Array(imageData);
+
+      //   // 创建three.js场景、相机和渲染器
+      //   const scene = new THREE.Scene();
+      //   const camera = new THREE.PerspectiveCamera(75, 500 / 500, 0.1, 1000);
+      //   camera.position.z = 10;
+      //   const renderer = new THREE.WebGLRenderer();
+      //   renderer.setSize(500, 500);
+      //   container.current.appendChild(renderer.domElement);
+
+      //   // 创建材质和纹理
+      //   const material = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(generateTexture(imageTypedArray, header)) });
+
+      //   // 将三维数据转换为网格对象
+      //   const geometry = new THREE.BoxGeometry(1, 1, 1, header.dims[1], header.dims[2], header.dims[3]);
+      //   const mesh = new THREE.Mesh(geometry, material);
+      //   scene.add(mesh);
+
+      //   // 渲染场景
+      //   function animate() {
+      //     requestAnimationFrame(animate);
+      //     mesh.rotation.x += 0.01;
+      //     mesh.rotation.y += 0.01;
+      //     renderer.render(scene, camera);
+      //   }
+      //   animate();
+
+      //   // 根据三维数据生成纹理
+      //   function generateTexture(imageData, header) {
+      //     const canvas = document.createElement('canvas');
+      //     canvas.width = header.dims[1];
+      //     canvas.height = header.dims[2];
+      //     const context = canvas.getContext('2d');
+      //     const image = context.createImageData(header.dims[1], header.dims[2]);
+      //     for (let i = 0; i < imageData.length; i++) {
+      //       const value = imageData[i];
+      //       const alpha = 255;
+      //       image.data[i * 4 + 0] = value >> 8;
+      //       image.data[i * 4 + 1] = value & 0xff;
+      //       image.data[i * 4 + 2] = 0;
+      //       image.data[i * 4 + 3] = alpha;
+      //     }
+      //     context.putImageData(image, 0, 0);
+      //     const texture = new THREE.Texture(canvas);
+      //     texture.needsUpdate = true;
+      //     texture.minFilter = THREE.LinearFilter;
+      //     texture.magFilter = THREE.LinearFilter;
+
+      //     return texture;
+      //   }
   }, [])
 
 
   return (
     <>
-      <div className='border-2' ref={containerRef}></div>
+      <div className='border-2' ref={container}></div>
       {/* <button onClick={() => setZ( z => z + 1 )}>+1</button>
       <button onClick={() => setZ( z => z - 1 )}>-1</button> */}
     </>
