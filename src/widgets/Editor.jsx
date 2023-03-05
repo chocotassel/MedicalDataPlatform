@@ -3,10 +3,7 @@ import { Slider, Switch } from 'antd';
 import * as nifti from 'nifti-reader-js';
 
 import MainView from './Editor/MainView'
-import TopView from './Editor/TopView'
-import LeftView from './Editor/LeftView'
-import FrontView from './Editor/FrontView'
-import Canvas from '/src/components/Canvas';
+import View from './Editor/View'
 
 function Editor() {
 
@@ -14,12 +11,8 @@ function Editor() {
   const isMountedRef = useRef(false);
 
   const [niftiImage, setNiftiImage] = useState(null);
-  const [xSize, setXSize] = useState(null);
-  const [ySize, setYSize] = useState(null);
-  const [zSize, setZSize] = useState(null);
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
-  const [z, setZ] = useState(0);
+  const [size, setSize] = useState({ x: 0, y: 0, z: 0 });
+  const [pointPos, setPointPos] = useState({ x: 0, y: 0, z: 0 });
   
 
   useEffect(() => {
@@ -67,14 +60,15 @@ function Editor() {
         return {niftiImage, xSize, ySize, zSize};
       }).then(res => {
         setNiftiImage(res.niftiImage);
-        setXSize(res.xSize);
-        setYSize(res.ySize);
-        setZSize(res.zSize);
+        setSize({ x: res.xSize, y: res.ySize, z: res.zSize});
       })
 
     }
   }, [])
 
+  useEffect(() => {
+    console.log(pointPos);
+  }, [pointPos])
 
   // // 定义NIfTI图像变换函数
   // function transformNifti(arrayBuffer, affineMatrix) {
@@ -131,14 +125,13 @@ function Editor() {
     <div className='min-h-full flex-1 grid grid-cols-2'>
       {/* <MainView/> */}
       <div>
-        X<Slider max={xSize-1} defaultValue={0} onChange={value => setX(value)}/>
-        Y<Slider max={ySize-1} defaultValue={0} onChange={value => setY(value)} />
-        Z<Slider max={zSize-1} defaultValue={0} onChange={value => setZ(value)} />
-        <Canvas />
+        X<Slider max={size.x-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, x: value})) }/>
+        Y<Slider max={size.y-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, y: value})) } />
+        Z<Slider max={size.z-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, z: value})) } />
       </div>
-      <TopView   niftiImage={niftiImage} xSize={xSize} ySize={ySize} z={z}/>
-      <LeftView  niftiImage={niftiImage} ySize={ySize} zSize={zSize} x={x}/>
-      <FrontView niftiImage={niftiImage} xSize={xSize} zSize={zSize} y={y}/>
+      <View niftiImage={niftiImage} width={size.x} height={size.y} type={3} pointPos={pointPos} setPointPos={setPointPos} />
+      <View niftiImage={niftiImage} width={size.y} height={size.z} type={1} pointPos={pointPos} setPointPos={setPointPos} />
+      <View niftiImage={niftiImage} width={size.x} height={size.z} type={2} pointPos={pointPos} setPointPos={setPointPos} />
     </div>
   )
 }
