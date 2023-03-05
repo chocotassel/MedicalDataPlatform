@@ -136,8 +136,6 @@ function MainView() {
   return (
     <>
       <div className='border-2' ref={container}></div>
-      {/* <button onClick={() => setZ( z => z + 1 )}>+1</button>
-      <button onClick={() => setZ( z => z - 1 )}>-1</button> */}
     </>
   )
 }

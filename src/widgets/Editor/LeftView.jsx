@@ -18,9 +18,9 @@ function LeftView(props) {
         for (let z = 0; z < zSize; z++) {
           const value = niftiImage[x][y][z];
           const alpha = 255;
-          imageData2.data[(y + z * ySize) * 4 + 0] = value >> 8;
+          imageData2.data[(y + z * ySize) * 4 + 0] = value & 0xff;
           imageData2.data[(y + z * ySize) * 4 + 1] = value & 0xff;
-          imageData2.data[(y + z * ySize) * 4 + 2] = 0;
+          imageData2.data[(y + z * ySize) * 4 + 2] = value & 0xff;
           imageData2.data[(y + z * ySize) * 4 + 3] = alpha;
         }
       }

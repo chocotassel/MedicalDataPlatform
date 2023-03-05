@@ -18,9 +18,10 @@ function TopView(props) {
         for (let y = 0; y < ySize; y++) {
           const value = niftiImage[x][y][z];
           const alpha = 255;
-          imageData2.data[(x + y * xSize) * 4 + 0] = value >> 8;
+          const grayValue = (65535 - (value - (-32768)) * (65535 - 0) / (32767 - (-32768)) ) / 256
+          imageData2.data[(x + y * xSize) * 4 + 0] = value & 0xff;
           imageData2.data[(x + y * xSize) * 4 + 1] = value & 0xff;
-          imageData2.data[(x + y * xSize) * 4 + 2] = 0;
+          imageData2.data[(x + y * xSize) * 4 + 2] = value & 0xff;
           imageData2.data[(x + y * xSize) * 4 + 3] = alpha;
         }
       }

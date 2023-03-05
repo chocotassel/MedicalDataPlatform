@@ -11,16 +11,16 @@ function FrontView(props) {
       const { xSize, y, zSize, niftiImage } = props;
       const ctx = container.current.getContext('2d');
       container.current.width = xSize;
-      container.current.height = zSize;
+      container.current.height = zSize * 2;
 
       const imageData2 = ctx.createImageData(xSize, zSize);
       for (let x = 0; x < xSize; x++) {
         for (let z = 0; z < zSize; z++) {
           const value = niftiImage[x][y][z];
           const alpha = 255;
-          imageData2.data[(x + z * xSize) * 4 + 0] = value >> 8;
+          imageData2.data[(x + z * xSize) * 4 + 0] = value & 0xff;
           imageData2.data[(x + z * xSize) * 4 + 1] = value & 0xff;
-          imageData2.data[(x + z * xSize) * 4 + 2] = 0;
+          imageData2.data[(x + z * xSize) * 4 + 2] = value & 0xff;
           imageData2.data[(x + z * xSize) * 4 + 3] = alpha;
         }
       }
