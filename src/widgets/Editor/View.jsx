@@ -50,7 +50,7 @@ function View(props) {
 
 
   // 点击壳
-  const [mousePos, setMousePos] = useState({ a: 0, b: 0 });
+  // const [mousePos, setMousePos] = useState({ a: 0, b: 0 });
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -98,10 +98,10 @@ function View(props) {
 
   function handleMouseDown(event) {
     const rect = event.target.getBoundingClientRect();
-    setMousePos({
-      a: Math.round(event.clientX - rect.left),
-      b: Math.round(event.clientY - rect.top),
-    });
+    // setMousePos({
+    //   a: Math.round(event.clientX - rect.left),
+    //   b: Math.round(event.clientY - rect.top),
+    // });
     console.log(props.pointPos);
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
@@ -109,9 +109,13 @@ function View(props) {
 
   function handleMouseMove(event) {
     const rect = event.target.getBoundingClientRect();
-    const a = Math.round(event.clientX - rect.left);
-    const b = Math.round(event.clientY - rect.top);
-    setMousePos({ a, b });
+    let a = Math.round(event.clientX - rect.left);
+    let b = Math.round(event.clientY - rect.top);
+    // setMousePos({ a, b });
+    a = a > props.width - 1 ? props.width - 1 : a;
+    b = b > props.height - 1 ? props.height - 1 : b;
+    a = a < 0 ? 0 : a;
+    b = b < 0 ? 0 : b;
     switch (props.type) {
       case 1:
         props.setPointPos(prevState => ({ ...prevState, y: a, z: b }));

@@ -1,141 +1,151 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 
-const imgList = []
 
-function MainView() {
-  const [z, setZ] = React.useState(0)
-
-  const container = React.createRef()
-  const controls= React.createRef()
-
-  // 场景和相机
-  const scene = new THREE.Scene()
+function MainView(props) {
   const width = 500
   const height = 500
-  // const camera = new THREE.PerspectiveCamera(
-  //   75,   //角度
-  //   width / height,
-  //   0.1,  //近端
-  //   1000  //远端
-  // )
-  const camera = new THREE.OrthographicCamera( width / - 20, width / 20, height / 20, height / - 20, 1, 100);
-  camera.position.set(0, 0, 1)
-  camera.lookAt(scene.position)
-  const renderer = new THREE.WebGLRenderer()
-  renderer.setClearColor(new THREE.Color(0xffffff))
-  renderer.setSize(500, 500)
-  renderer.shadowMap.enabled = true
 
-  // 坐标轴
-  const axesHelper = new THREE.AxesHelper( 5 );
-  scene.add( axesHelper );
+  // 引用
+  const pointRef = useRef(null);
+  const xAxisRef = useRef(null);
+  const yAxisRef = useRef(null);
+  const zAxisRef = useRef(null);
+  const container = useRef(null);
+  const requestRef = useRef(null);
+  const cameraRef = useRef(null);
 
-  // 立方体和材质
-  // const materials = imgList.map(img => {
-  //   const map = new THREE.TextureLoader().load(img)
-  //   return new THREE.MeshBasicMaterial({ map, side: THREE.DoubleSide })
-  // })
-  // const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 })
 
-  // const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
-  // const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
-  // cube.position.set(0,0,0)
-  // cube.castShadow = true
-  // cube.scale.setX(-1)
-  // scene.add(cube)
+  // 点坐标
+  const { x: xSize, y: ySize, z: zSize } = props.size
+  const { x, y, z } = props.pointPos
 
-  // 模型加载
-  const otherObjLoad = new OBJLoader()
-  // otherObjLoad.load('/public/objs/nii2mesh_0b2be9e0-886b-4144-99f0-8bb4c6eaa848.obj', function(obj) {
-  otherObjLoad.load('/public/objs/yaoyao.obj', function(obj) {
-    obj.scale.set(0.4, 0.4, -0.4)
-    obj.position.set(0,-8,0)
-    scene.add(obj)
-  })
 
-  // 渲染
+
   useEffect(() => {
-    function renderScene() {
-      requestAnimationFrame(renderScene)
-      renderer.render(scene, camera)
-    }
-    renderScene()
+    // 初始化
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      width / height,
+      0.1,
+      10000
+    );
+    camera.position.set(xSize, ySize, zSize);
+    camera.lookAt(0, 0, 0);
+    cameraRef.current = camera;
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(width, height);
+    container.current.appendChild(renderer.domElement);
 
-    if (container.current) {
-      controls.current = new OrbitControls(camera, container.current)
-      controls.current.enableDamping = true
-      controls.current.enableZoom = true
-      controls.current.enablePan = true
-    }
-    container.current.appendChild(renderer.domElement)
 
-      //   // 读取NIfTI文件头信息
-      //   const header = nifti.readHeader(arrayBuffer);
+    // 点
+    const pointGeometry = new THREE.BufferGeometry();
+    pointGeometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0], 3));
+    const pointMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
+    scene.add(pointMesh);
+    pointRef.current = pointMesh;
 
-      //   // 读取nifti文件的图像数据
-      //   const imageData = nifti.readImage(header, arrayBuffer);
+    // 平行线
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
-      //   // 将ArrayBuffer类型的图像数据转换为Int16Array类型的图像数据
-      //   const imageTypedArray = new Int8Array(imageData);
+    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, y, z),
+      new THREE.Vector3(xSize, y, z),
+    ]);
+    const xAxis = new THREE.Line(xAxisGeometry, lineMaterial);
+    scene.add(xAxis);
+    xAxisRef.current = xAxis;
 
-      //   // 创建three.js场景、相机和渲染器
-      //   const scene = new THREE.Scene();
-      //   const camera = new THREE.PerspectiveCamera(75, 500 / 500, 0.1, 1000);
-      //   camera.position.z = 10;
-      //   const renderer = new THREE.WebGLRenderer();
-      //   renderer.setSize(500, 500);
-      //   container.current.appendChild(renderer.domElement);
+    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(x, 0, z),
+      new THREE.Vector3(x, ySize, z),
+    ]);
+    const yAxis = new THREE.Line(yAxisGeometry, lineMaterial);
+    scene.add(yAxis);
+    yAxisRef.current = yAxis;
 
-      //   // 创建材质和纹理
-      //   const material = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(generateTexture(imageTypedArray, header)) });
+    const zAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(x, y, 0),
+      new THREE.Vector3(x, y, zSize),
+    ]);
+    const zAxis = new THREE.Line(zAxisGeometry, lineMaterial);
+    scene.add(zAxis);
+    zAxisRef.current = zAxis;
 
-      //   // 将三维数据转换为网格对象
-      //   const geometry = new THREE.BoxGeometry(1, 1, 1, header.dims[1], header.dims[2], header.dims[3]);
-      //   const mesh = new THREE.Mesh(geometry, material);
-      //   scene.add(mesh);
 
-      //   // 渲染场景
-      //   function animate() {
-      //     requestAnimationFrame(animate);
-      //     mesh.rotation.x += 0.01;
-      //     mesh.rotation.y += 0.01;
-      //     renderer.render(scene, camera);
-      //   }
-      //   animate();
+    // 坐标轴和控制器
+    const axesHelper = new THREE.AxesHelper( 5 );
+    scene.add( axesHelper );
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.update();
 
-      //   // 根据三维数据生成纹理
-      //   function generateTexture(imageData, header) {
-      //     const canvas = document.createElement('canvas');
-      //     canvas.width = header.dims[1];
-      //     canvas.height = header.dims[2];
-      //     const context = canvas.getContext('2d');
-      //     const image = context.createImageData(header.dims[1], header.dims[2]);
-      //     for (let i = 0; i < imageData.length; i++) {
-      //       const value = imageData[i];
-      //       const alpha = 255;
-      //       image.data[i * 4 + 0] = value >> 8;
-      //       image.data[i * 4 + 1] = value & 0xff;
-      //       image.data[i * 4 + 2] = 0;
-      //       image.data[i * 4 + 3] = alpha;
-      //     }
-      //     context.putImageData(image, 0, 0);
-      //     const texture = new THREE.Texture(canvas);
-      //     texture.needsUpdate = true;
-      //     texture.minFilter = THREE.LinearFilter;
-      //     texture.magFilter = THREE.LinearFilter;
+    // 模型加载
+    const objLoad = new OBJLoader()
+    // objLoad.load('/public/objs/nii2mesh_0b2be9e0-886b-4144-99f0-8bb4c6eaa848.obj', function(obj) {
+    objLoad.load('/public/objs/nii2mesh_0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.obj', function(obj) {
+      // obj.scale.set(0.4, 0.4, -0.4)
+      obj.position.set(0, 0, 0)
+      scene.add(obj)
+    })
 
-      //     return texture;
-      //   }
-  }, [])
+    // 创建地板
+    // var floorGeometry = new THREE.PlaneGeometry(1000, 1000); // 宽度和高度为10
+    // var floorMaterial = new THREE.MeshStandardMaterial({color: 0x00ff00}); // 颜色为白色
+    // var floor = new THREE.Mesh(floorGeometry, floorMaterial); // 创建网格对象
+    // floor.rotation.x = -Math.PI / 2; // 将地板旋转90度，使其水平放置
+    // scene.add(floor); // 将地板添加到场景中
+
+    // 创建灯光
+    var light = new THREE.DirectionalLight(0xffffff, 1); // 颜色为白色，强度为1
+    light.position.set(0, 5, 0); // 设置灯光的位置在上方
+    scene.add(light); // 将灯光添加到场景中
+
+    // 动画
+    const animate = () => {
+      requestRef.current = requestAnimationFrame(animate);
+      pointMesh.position.set(new THREE.Vector3(x, y, z));
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    return () => {
+      cancelAnimationFrame(requestRef.current);
+      container.current.removeChild(renderer.domElement);
+    };
+  }, [xSize, ySize, zSize]);
+
+
+
+  useEffect(() => {
+    pointRef.current.geometry.attributes.position.setXYZ(0, x, y, z);
+    pointRef.current.geometry.attributes.position.needsUpdate = true;
+    xAxisRef.current.geometry.setFromPoints([
+      new THREE.Vector3(0, y, z),
+      new THREE.Vector3(xSize, y, z),
+    ]);
+    yAxisRef.current.geometry.setFromPoints([
+      new THREE.Vector3(x, 0, z),
+      new THREE.Vector3(x, ySize, z),
+    ]);
+    zAxisRef.current.geometry.setFromPoints([
+      new THREE.Vector3(x, y, 0),
+      new THREE.Vector3(x, y, zSize),
+    ]);
+    cameraRef.current.lookAt(x, y, z);
+  }, [x, y, z])
+
 
 
   return (
     <>
-      <div className='border-2' ref={container}></div>
+      <div className='border-2' ref={container}>
+      </div>
     </>
   )
 }

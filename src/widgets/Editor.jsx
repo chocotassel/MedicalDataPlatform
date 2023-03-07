@@ -66,10 +66,6 @@ function Editor() {
     }
   }, [])
 
-  useEffect(() => {
-    console.log(pointPos);
-  }, [pointPos])
-
   // // 定义NIfTI图像变换函数
   // function transformNifti(arrayBuffer, affineMatrix) {
   //   // 使用nifti-reader-js库解析arrayBuffer
@@ -123,12 +119,12 @@ function Editor() {
 
   return (
     <div className='min-h-full flex-1 grid grid-cols-2'>
-      {/* <MainView/> */}
-      <div>
+      <MainView size={size} pointPos={pointPos} />
+      {/* <div>
         X<Slider max={size.x-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, x: value})) }/>
         Y<Slider max={size.y-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, y: value})) } />
         Z<Slider max={size.z-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, z: value})) } />
-      </div>
+      </div> */}
       <View niftiImage={niftiImage} width={size.x} height={size.y} type={3} pointPos={pointPos} setPointPos={setPointPos} />
       <View niftiImage={niftiImage} width={size.y} height={size.z} type={1} pointPos={pointPos} setPointPos={setPointPos} />
       <View niftiImage={niftiImage} width={size.x} height={size.z} type={2} pointPos={pointPos} setPointPos={setPointPos} />
