@@ -21,16 +21,19 @@ function Editor() {
   const [topViewMsg, setTopViewMsg]     = useState({ width: 0, height: 0, displayHeight: 0, type: 0, depth: 0 });
   const [leftViewMsg, setLeftViewMsg]   = useState({ width: 0, height: 0, displayHeight: 0, type: 0, depth: 0 });
   const [frontViewMsg, setFrontViewMsg] = useState({ width: 0, height: 0, displayHeight: 0, type: 0, depth: 0 });
-  const [viewMsg, setViewMsg] = useState({ type: 0 });
   
 
   const [tool, setTool] = useState(0);
-  const handleChange = (value) => {
+  const handleToolChange = (value) => {
     setTool(value)
   };
-  const [panSize, setPanSize] = useState(8);
-  const handlePanSizeChange = (value) => {
-    setPanSize(value)
+  const [pen, setPen] = useState(1);
+  const handlePenChange = (value) => {
+    setPen(value)
+  };
+  const [penSize, setPenSize] = useState(8);
+  const handlePenSizeChange = (value) => {
+    setPenSize(value)
   }
 
   useEffect(() => {
@@ -108,15 +111,32 @@ function Editor() {
         Z<Slider max={size.z-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, z: value})) } />
 
         <Select
-          defaultValue={0}
+          defaultValue={tool}
           style={{
             width: 120,
           }}
-          onChange={handleChange}
+          onChange={handleToolChange}
           options={[
             {
               value: 0,
               label: '坐标',
+            },
+            {
+              value: 1,
+              label: '标记',
+            },
+          ]}
+        />
+        <Select
+          defaultValue={pen}
+          style={{
+            width: 120,
+          }}
+          onChange={handlePenChange}
+          options={[
+            {
+              value: 0,
+              label: '橡皮',
             },
             {
               value: 1,
@@ -125,11 +145,11 @@ function Editor() {
           ]}
         />
         <Select
-          defaultValue={8}
+          defaultValue={penSize}
           style={{
             width: 120,
           }}
-          onChange={handlePanSizeChange}
+          onChange={handlePenSizeChange}
           options={[
             {
               value: 2,
@@ -150,9 +170,9 @@ function Editor() {
           ]}
         />
       </div>
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   pointPos={pointPos} setPointPos={setPointPos} tool={tool} rate={rate} panSize={panSize} />
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  pointPos={pointPos} setPointPos={setPointPos} tool={tool} rate={rate} panSize={panSize} />
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={frontViewMsg} pointPos={pointPos} setPointPos={setPointPos} tool={tool} rate={rate} panSize={panSize} />
+      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
+      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
+      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={frontViewMsg} pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
     </div>
   )
 }

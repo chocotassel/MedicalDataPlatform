@@ -11,13 +11,13 @@ function View(props) {
   })
 
   useEffect(() => {
-    const curser = props.tool ? `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="${props.panSize*2}" height="${props.panSize*2}"><circle cx="${props.panSize}" cy="${props.panSize}" r="${props.panSize - 1}" fill="none" stroke="red" stroke-width="2"/></svg>') ${props.panSize} ${props.panSize}, auto` : 'crosshair';
+    const curser = props.tool ? `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="${props.penSize*2}" height="${props.penSize*2}"><circle cx="${props.penSize}" cy="${props.penSize}" r="${props.penSize - 1}" fill="none" stroke="${props.pen ? 'red' : 'white'}" stroke-width="2"/></svg>') ${props.penSize} ${props.penSize}, auto` : 'crosshair';
 
     setCanvasStyle(prevState => ({
       ...prevState,
       cursor: curser,
     }))
-  }, [props.tool, props.panSize])
+  }, [props.tool, props.penSize, props.pen])
 
 
   // 滚轮事件
@@ -161,7 +161,7 @@ function View(props) {
 
         // 设置画笔大小
         ctx2.strokeStyle = "red";
-        ctx2.lineWidth = props.panSize * 2;
+        ctx2.lineWidth = props.penSize * 2;
         // ctx2.save();
         // setOldImageData(ctx2.getImageData(0, 0, width, displayHeight).data.map( item => item !== 0 ? 1 : 0));
         // ctx2.scale(1, props.rate);
@@ -352,17 +352,17 @@ function View(props) {
     }
   }
   function drawPixel(a, b) {
-    // console.log(a, b);
+    const flag = props.pen
     // 绘制像素点
     switch (viewMsg.type) {
       case 1:
-        props.drawImage[props.pointPos.x][a][b] = 1;
+        props.drawImage[props.pointPos.x][a][b] = flag;
         break;
       case 2:
-        props.drawImage[a][props.pointPos.y][b] = 1;
+        props.drawImage[a][props.pointPos.y][b] = flag;
         break;
       case 3:
-        props.drawImage[a][b][props.pointPos.z] = 1;
+        props.drawImage[a][b][props.pointPos.z] = flag;
         break;
       default:
         break;
@@ -430,7 +430,7 @@ function View(props) {
     const a = event.nativeEvent.offsetX;
     const b = viewMsg.type == 3 ? event.nativeEvent.offsetY : Math.round(event.nativeEvent.offsetY / props.rate);
     // ctx.moveTo(a, b);
-    drawSolidCircle(a, b, props.panSize);
+    drawSolidCircle(a, b, props.penSize);
     setDrawPoint({ a, b });
     setDrawing(true);
   }
@@ -446,9 +446,9 @@ function View(props) {
       // const ctx = canvas.getContext('2d');
       const a = event.nativeEvent.offsetX;
       const b = viewMsg.type == 3 ? event.nativeEvent.offsetY : Math.round(event.nativeEvent.offsetY / props.rate);
-      drawSolidCircle(a, b, props.panSize);
+      drawSolidCircle(a, b, props.penSize);
       setDrawPoint(prev => {
-        drawParallelLine(a, b, prev.a, prev.b, props.panSize);
+        drawParallelLine(a, b, prev.a, prev.b, props.penSize);
         return { a, b };
       });
       // ctx.lineTo(a, b);
