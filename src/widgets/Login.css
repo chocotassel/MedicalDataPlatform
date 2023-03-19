@@ -1,0 +1,21 @@
+.login-body{
+  display: inline-block;
+  width: 100%;
+}
+.login-form {
+    max-width: 1000px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+  }
+.login-form-forgot {
+    float: right;
+  }
+.ant-col-rtl .login-form-forgot {
+    float: left;
+  }
+.login-form-button {
+    width: 100%;
+  }
+.login-form-register{
+margin: auto;
+  }

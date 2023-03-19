@@ -1,0 +1,21 @@
+.site-layout-content {
+    min-height: 90vh;
+    padding: 24px;
+  }
+  #components-layout-top .logo {
+    float: left;
+    width: 500px;
+    height: 38px;
+    margin: 12px 0;
+    color: #1677FF;
+    font-size: 26px;
+    line-height: 38px;
+  }
+  #components-layout-top li{
+    width: 100px;
+    text-align: center;
+  }
+  .ant-row-rtl #components-layout-top .logo {
+    float: right;
+    margin: 16px 0 16px 24px;
+  }

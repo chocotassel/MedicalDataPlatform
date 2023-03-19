@@ -1,13 +1,10 @@
 import React from 'react';
-import Home from './pages/Home';
-import * as THREE from 'three';
-
-THREE.Cache.enabled = true;
+import Router from './router'
 
 function App() {
   return (
     <div className="App">
-      <Home />
+      <Router />
     </div>
   )
 }
