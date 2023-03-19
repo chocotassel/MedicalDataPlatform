@@ -22,6 +22,7 @@ function MainView(props) {
   // 点坐标
   const { x: xSize, y: ySize, z: zSize } = props.size
   const { x, y, z } = props.pointPos
+  const { rate } = props
 
 
 
@@ -72,11 +73,13 @@ function MainView(props) {
 
     const zAxisGeometry = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(x, y, 0),
-      new THREE.Vector3(x, y, zSize),
+      new THREE.Vector3(x, y, zSize * rate),
     ]);
     const zAxis = new THREE.Line(zAxisGeometry, lineMaterial);
     scene.add(zAxis);
     zAxisRef.current = zAxis;
+
+    console.log(rate);
 
 
     // 坐标轴和控制器
@@ -90,7 +93,7 @@ function MainView(props) {
     // objLoad.load('/public/objs/nii2mesh_0b2be9e0-886b-4144-99f0-8bb4c6eaa848.obj', function(obj) {
     objLoad.load('/public/objs/nii2mesh_0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.obj', function(obj) {
       // obj.scale.set(0.4, 0.4, -0.4)
-      obj.position.set(0, 0, 0)
+      obj.position.set(384, 384, 54)
       scene.add(obj)
     })
 
@@ -118,7 +121,7 @@ function MainView(props) {
       cancelAnimationFrame(requestRef.current);
       container.current.removeChild(renderer.domElement);
     };
-  }, [xSize, ySize, zSize]);
+  }, [xSize, ySize, zSize, rate]);
 
 
 

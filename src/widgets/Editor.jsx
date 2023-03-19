@@ -4,6 +4,7 @@ import * as nifti from 'nifti-reader-js';
 
 import MainView from './Editor/MainView'
 import View from './Editor/View'
+import PolygonCanvas from '../components/PolygonCanvas'
 
 function Editor() {
 
@@ -35,7 +36,11 @@ function Editor() {
   const handlePenSizeChange = (value) => {
     setPenSize(value)
   }
-
+  function uniqueArray(arr) {
+    return arr.filter(function(item, index) {
+      return arr.indexOf(item) === index;
+    });
+  }
   useEffect(() => {
     if (!isMountedRef.current) {
       isMountedRef.current = true;
@@ -59,6 +64,7 @@ function Editor() {
         const xSize = header.dims[1];
         const ySize = header.dims[2];
         const zSize = header.dims[3];
+        // const uniqueArr = [];
 
         // 将Int16Array类型的图像数据转换为三维数组
         const niftiImage = new Array(xSize);
@@ -72,12 +78,19 @@ function Editor() {
             for (let z = 0; z < zSize; z++) {
               const index = x + y * xSize + z * xSize * ySize;
               niftiImage[x][y][z] = imageTypedArray[index];
-              drawImage[x][y][z] = 0
+              drawImage[x][y][z] = 0;
+              // if(niftiImage[x][y][z] > 0 && niftiImage[x][y][z] < 2) {
+              //   console.log(niftiImage[x][y][z] & 0xffff);
+              // }
+              // let a = imageTypedArray[index] > 15 ? imageTypedArray[index] % 16 : imageTypedArray[index];
+              // if (!uniqueArr.includes(a)) {
+              //   uniqueArr.push(a);
+              // }
             }
           }
         }
         // console.log((niftiImage[0][0][0]& 0xffff).toString(2));
-
+        // console.log(uniqueArr)
       
         return {niftiImage, drawImage, xSize, ySize, zSize, rate: header.pixDims[3] / header.pixDims[1]};
       }).then(res => {
@@ -104,8 +117,8 @@ function Editor() {
 
   return (
     <div className='min-h-full flex-1 grid grid-cols-2'>
-      {/* <MainView size={size} pointPos={pointPos} /> */}
-      <div>
+      <MainView size={size} pointPos={pointPos} rate={rate} />
+      {/* <div>
         X<Slider max={size.x-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, x: value})) }/>
         Y<Slider max={size.y-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, y: value})) } />
         Z<Slider max={size.z-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, z: value})) } />
@@ -142,6 +155,10 @@ function Editor() {
               value: 1,
               label: '画笔',
             },
+            {
+              value: 2,
+              label: '多边形',
+            },
           ]}
         />
         <Select
@@ -169,7 +186,8 @@ function Editor() {
             },
           ]}
         />
-      </div>
+      </div> */}
+        {/* <PolygonCanvas tool={tool} /> */}
       <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
       <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
       <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={frontViewMsg} pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
