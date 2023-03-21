@@ -20,7 +20,6 @@ export const signSlice = createSlice({
   }
 })
 
-// 为每个 case reducer 函数生成 Action creators
 export const { signIn, signOut, setUser } = signSlice.actions
 
 export default signSlice.reducer
