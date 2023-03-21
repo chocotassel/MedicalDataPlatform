@@ -4,9 +4,9 @@ import { createSlice } from '@reduxjs/toolkit'
 export const pointPosSlice = createSlice({
   name: 'pointPos',
   initialState: {
-    x: 1,
-    y: 1,
-    z: 1
+    x: 0,
+    y: 0,
+    z: 0,
   },
   reducers: {
     setX: (state, action) => {

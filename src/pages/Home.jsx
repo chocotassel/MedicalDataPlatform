@@ -3,6 +3,7 @@ import './Home.css'
 import User from '../widgets/User';
 import { Outlet,useNavigate } from 'react-router-dom';
 import Workbench from '../widgets/Workbench'
+import Editor from '../widgets/Editor';
 
 
 const { Header, Content, Footer } = Layout;
@@ -48,6 +49,7 @@ const App = () => {
         >
           <Workbench/>
           <Outlet/>
+          <Editor />
         </div>
       </Content>
       <Footer

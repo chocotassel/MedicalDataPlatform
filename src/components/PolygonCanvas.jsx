@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 
 function PolygonCanvas(props) {
+  // props
+  const viewMsg = props.viewMsg;
 
-  const [canvasStyle, setCanvasStyle] = useState({
-    // position: 'absolute',
-    // top: 0,
-    // left: 0,
-  })
+  // redux
+  const pointPos = useSelector((state) => state.pointPos);
+  const tool = useSelector((state) => state.tool);
+  const dispatch = useDispatch();
+
 
   const polygonRef = useRef(null);
   const [drawing, setDrawing] = useState(false);
@@ -43,17 +46,17 @@ function PolygonCanvas(props) {
   }
 
   function drawPixel(a, b) {
-    const flag = props.pen
+    const flag = tool.type
     // 绘制像素点
     switch (viewMsg.type) {
       case 1:
-        props.drawImage[props.pointPos.x][a][b] = flag;
+        props.drawImage[pointPos.x][a][b] = flag;
         break;
       case 2:
-        props.drawImage[a][props.pointPos.y][b] = flag;
+        props.drawImage[a][pointPos.y][b] = flag;
         break;
       case 3:
-        props.drawImage[a][b][props.pointPos.z] = flag;
+        props.drawImage[a][b][pointPos.z] = flag;
         break;
       default:
         break;
@@ -132,7 +135,7 @@ function PolygonCanvas(props) {
       height={300}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
-      style={{ ...canvasStyle, border: "1px solid black" }}
+      style={{ ...props.canvasStyle, border: "1px solid black", display: tool.type == 3 ? 'block' : 'none' }}
     >
       Your browser does not support the canvas element.
     </canvas>

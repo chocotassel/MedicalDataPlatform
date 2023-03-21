@@ -8,8 +8,10 @@ import {Link} from 'react-router-dom';
 const App = () => {
   // Redux
   const { x, y, z } = useSelector((state) => state.pointPos)
+  const { xSize, ySize, zSize } = useSelector((state) => state.modelSize)
   const { type, color, size } = useSelector((state) => state.tool)
   const dispatch = useDispatch();
+
   // 分割结果
   const items = [
     { label: '腹腔', key: '1' },
@@ -35,41 +37,42 @@ const App = () => {
     <div style={{display:'inline-block',height:'900px',minWidth:'300px',backgroundColor:'#fff',padding:'0 10px'}}>
       <h3>工具</h3>
       <Radio.Group onChange={(e) => dispatch(setType(e.target.value))}>
-        <Radio.Button value="拖动">拖动</Radio.Button>
-        <Radio.Button value="画笔">画笔</Radio.Button>
-        <Radio.Button value="橡皮擦">橡皮擦</Radio.Button>
-        <Radio.Button value="多边形框"><ExpandOutlined /></Radio.Button>
-        <Radio.Button value="尺子">尺子</Radio.Button>
+        <Radio.Button value={0}>拖动</Radio.Button>
+        <Radio.Button value={1}>画笔</Radio.Button>
+        <Radio.Button value={2}>橡皮擦</Radio.Button>
+        <Radio.Button value={3}><ExpandOutlined /></Radio.Button>
+        <Radio.Button value={4}>尺子</Radio.Button>
       </Radio.Group>
       <br />
       X
       <Slider
-        min={1}
-        max={20}
+        min={0}
+        max={xSize}
         onChange={(e)=>dispatch(setX(e))}
         value={typeof x === 'number' ? x : 0}
       />
       <br />
       Y
       <Slider
-        min={1}
-        max={20}
+        min={0}
+        max={ySize}
         onChange={(e)=>dispatch(setY(e))}
         value={typeof y === 'number' ? y : 0}
       />
       <br />
       Z
       <Slider
-        min={1}
-        max={20}
+        min={0}
+        max={zSize}
         onChange={(e)=>dispatch(setZ(e))}
         value={typeof z === 'number' ? z : 0}
       />
       <div style={{
-        display:'inline-block',
-        marginRight:5,
-        backgroundColor:color,
-        width:10,height:10
+        display: 'inline-block',
+        marginRight: 5,
+        backgroundColor: color,
+        width: 10,
+        height: 10
         }}>
       </div>
       <Select

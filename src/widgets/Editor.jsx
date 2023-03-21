@@ -4,13 +4,14 @@ import * as nifti from 'nifti-reader-js';
 
 import MainView from './Editor/MainView'
 import View from './Editor/View'
-import PolygonCanvas from '../components/PolygonCanvas'
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setX, setY, setZ } from '../store/modules/pointPosState';
+import { setXSize, setYSize, setZSize, setRate } from '../store/modules/modelSizeState';
 
 function Editor() {
-  const { pointPos }=useSelector((state) => state.pointPos);
+  // redux
+  const pointPos = useSelector((state) => state.pointPos);
+  const modelSize = useSelector((state) => state.modelSize);
   const dispatch = useDispatch();
 
   // const src = '/src/assets/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii'
@@ -20,8 +21,6 @@ function Editor() {
   const [niftiImage, setNiftiImage] = useState(null);
   const [drawImage, setDrawImage] = useState(null);
   const [size, setSize] = useState({ x: 0, y: 0, z: 0 });
-  // const [pointPos, setPointPos] = useState({ x: 0, y: 0, z: 0 });
-  const [rate, setRate] = useState(1);
 
 
   const [topViewMsg, setTopViewMsg]     = useState({ width: 0, height: 0, displayHeight: 0, type: 0, depth: 0 });
@@ -29,23 +28,6 @@ function Editor() {
   const [frontViewMsg, setFrontViewMsg] = useState({ width: 0, height: 0, displayHeight: 0, type: 0, depth: 0 });
   
 
-  const [tool, setTool] = useState(0);
-  const handleToolChange = (value) => {
-    setTool(value)
-  };
-  const [pen, setPen] = useState(1);
-  const handlePenChange = (value) => {
-    setPen(value)
-  };
-  const [penSize, setPenSize] = useState(8);
-  const handlePenSizeChange = (value) => {
-    setPenSize(value)
-  }
-  function uniqueArray(arr) {
-    return arr.filter(function(item, index) {
-      return arr.indexOf(item) === index;
-    });
-  }
   useEffect(() => {
     if (!isMountedRef.current) {
       isMountedRef.current = true;
@@ -99,10 +81,14 @@ function Editor() {
       
         return {niftiImage, drawImage, xSize, ySize, zSize, rate: header.pixDims[3] / header.pixDims[1]};
       }).then(res => {
+        dispatch(setXSize(res.xSize));
+        dispatch(setYSize(res.ySize));
+        dispatch(setZSize(res.zSize));
+        dispatch(setRate(res.rate))
+
         setNiftiImage(res.niftiImage);
         setDrawImage(res.drawImage)
         setSize({ x: res.xSize, y: res.ySize, z: res.zSize});
-        setRate(res.rate);
 
         setTopViewMsg({   width: res.xSize, height: res.ySize, displayHeight: res.ySize           , type: 3, depth: res.zSize });
         setLeftViewMsg({  width: res.ySize, height: res.zSize, displayHeight: res.zSize * res.rate, type: 1, depth: res.xSize });
@@ -112,90 +98,19 @@ function Editor() {
     }
   }, [])
 
-  
 
 
-  useEffect(() => {
-    console.log(pointPos);
-  }, [pointPos])
+  // useEffect(() => {
+  //   console.log(pointPos);
+  // }, [pointPos])
 
 
   return (
     <div className='min-h-full flex-1 grid grid-cols-2'>
-      <MainView size={size} pointPos={pointPos} rate={rate} />
-      {/* <div>
-        X<Slider max={size.x-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, x: value})) }/>
-        Y<Slider max={size.y-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, y: value})) } />
-        Z<Slider max={size.z-1} defaultValue={0} onChange={value => setPointPos(prevState => ({ ...prevState, z: value})) } />
-
-        <Select
-          defaultValue={tool}
-          style={{
-            width: 120,
-          }}
-          onChange={handleToolChange}
-          options={[
-            {
-              value: 0,
-              label: '坐标',
-            },
-            {
-              value: 1,
-              label: '标记',
-            },
-          ]}
-        />
-        <Select
-          defaultValue={pen}
-          style={{
-            width: 120,
-          }}
-          onChange={handlePenChange}
-          options={[
-            {
-              value: 0,
-              label: '橡皮',
-            },
-            {
-              value: 1,
-              label: '画笔',
-            },
-            {
-              value: 2,
-              label: '多边形',
-            },
-          ]}
-        />
-        <Select
-          defaultValue={penSize}
-          style={{
-            width: 120,
-          }}
-          onChange={handlePenSizeChange}
-          options={[
-            {
-              value: 2,
-              label: '4',
-            },
-            {
-              value: 4,
-              label: '8',
-            },
-            {
-              value: 8,
-              label: '16',
-            },
-            {
-              value: 16,
-              label: '32',
-            },
-          ]}
-        />
-      </div> */}
-        {/* <PolygonCanvas tool={tool} /> */}
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={frontViewMsg} pointPos={pointPos} setPointPos={setPointPos} tool={tool} pen={pen} rate={rate} penSize={penSize} />
+      <MainView />
+      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   />
+      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  />
+      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={frontViewMsg} />
     </div>
   )
 }

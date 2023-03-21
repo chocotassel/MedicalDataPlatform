@@ -3,9 +3,18 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setX, setY, setZ } from '../../store/modules/pointPosState';
+
 
 
 function MainView(props) {
+  // redux
+  const pointPos = useSelector((state) => state.pointPos);
+  const modelSize = useSelector((state) => state.modelSize);
+  const tool = useSelector((state) => state.tool);
+  const dispatch = useDispatch();
+
   const width = 500
   const height = 500
 
@@ -20,8 +29,8 @@ function MainView(props) {
 
 
   // 点坐标
-  const { x: xSize, y: ySize, z: zSize } = props.size
-  const { x, y, z } = props.pointPos
+  const { xSize, ySize, zSize } = modelSize
+  const { x, y, z } = pointPos
   const { rate } = props
 
 
@@ -78,8 +87,6 @@ function MainView(props) {
     const zAxis = new THREE.Line(zAxisGeometry, lineMaterial);
     scene.add(zAxis);
     zAxisRef.current = zAxis;
-
-    console.log(rate);
 
 
     // 坐标轴和控制器
