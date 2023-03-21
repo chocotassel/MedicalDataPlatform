@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-// 登录状态共享
-export const coordSlice = createSlice({
-  name: 'coordinates',
+// 当前位置
+export const pointPosSlice = createSlice({
+  name: 'pointPos',
   initialState: {
     x: 1,
     y: 1,
@@ -21,7 +21,6 @@ export const coordSlice = createSlice({
   }
 })
 
-// 为每个 case reducer 函数生成 Action creators
-export const { setX, setY, setZ } = coordSlice.actions
+export const { setX, setY, setZ } = pointPosSlice.actions
 
-export default coordSlice.reducer
+export default pointPosSlice.reducer

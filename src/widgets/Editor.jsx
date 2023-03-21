@@ -6,7 +6,12 @@ import MainView from './Editor/MainView'
 import View from './Editor/View'
 import PolygonCanvas from '../components/PolygonCanvas'
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setX, setY, setZ } from '../store/modules/pointPosState';
+
 function Editor() {
+  const { pointPos }=useSelector((state) => state.pointPos);
+  const dispatch = useDispatch();
 
   // const src = '/src/assets/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii'
   const src = '/src/assets/submit/0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.nii/0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.nii'
@@ -15,7 +20,7 @@ function Editor() {
   const [niftiImage, setNiftiImage] = useState(null);
   const [drawImage, setDrawImage] = useState(null);
   const [size, setSize] = useState({ x: 0, y: 0, z: 0 });
-  const [pointPos, setPointPos] = useState({ x: 0, y: 0, z: 0 });
+  // const [pointPos, setPointPos] = useState({ x: 0, y: 0, z: 0 });
   const [rate, setRate] = useState(1);
 
 

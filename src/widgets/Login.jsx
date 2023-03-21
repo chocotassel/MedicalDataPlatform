@@ -3,7 +3,7 @@ import { Button, Form, Input, Col, Row } from 'antd'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import { signIn, setUser } from '../store/signState'
+import { signIn, setUser } from '../store/modules/signState'
 import './Login.css'
 
 const Login = () => {

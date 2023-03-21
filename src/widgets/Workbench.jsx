@@ -1,14 +1,14 @@
 import { DownOutlined, ExpandOutlined } from '@ant-design/icons';
 import { Dropdown, Radio, Select, Slider, Space, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { setType, setColor, setSize } from '../store/mouseState';
-import { setX, setY, setZ } from '../store/coordinates';
+import { setType, setColor, setSize } from '../store/modules/toolState';
+import { setX, setY, setZ } from '../store/modules/pointPosState';
 import {Link} from 'react-router-dom';
   
 const App = () => {
   // Redux
-  const { x, y, z }=useSelector((state)=>state.coord)
-  const { type, color, size}=useSelector((state)=>state.mouse)
+  const { x, y, z } = useSelector((state) => state.pointPos)
+  const { type, color, size } = useSelector((state) => state.tool)
   const dispatch = useDispatch();
   // 分割结果
   const items = [
@@ -126,12 +126,12 @@ const App = () => {
         <Button>下一帧</Button>
       </Radio.Group>
       <h3>数据分析</h3>
+
       {/* 分割结果 */}
       <Dropdown
       menu={{
         items,
       }}
-      open={open}
     >
       <a onClick={(e) => e.preventDefault()}>
         <Space>
@@ -140,7 +140,9 @@ const App = () => {
         </Space>
       </a>
       </Dropdown>
+
       <br />
+
       <Link to='/upload'><Button type='primary '>上传</Button></Link>
     </div>
   );

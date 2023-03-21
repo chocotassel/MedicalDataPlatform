@@ -2,11 +2,12 @@ import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Space, Dropdown,Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDispatch,useSelector } from 'react-redux';
-import {signOut} from '../store/signState'
+import {signOut} from '../store/modules/signState'
 
 const User=()=> {
   const {value,user}=useSelector((state) => state.sign);   // 获取登录状态
   const dispatch = useDispatch();   // 修改登录状态
+  
   // 退出按钮
   const items = [
     {

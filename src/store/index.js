@@ -1,10 +1,12 @@
-// store.js
+import { configureStore } from '@reduxjs/toolkit'
+import signState from './modules/signState'
+import pointPosSlice from './modules/pointPosState'
+import toolSlice from './modules/toolState'
 
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from '../reducer/todosReducer';
-
-const store = configureStore({
-  reducer: rootReducer
-});
-
-export default store;
+export default configureStore({
+  reducer: {
+    sign: signState,
+    pointPos: pointPosSlice,
+    tool: toolSlice,
+  }
+})
