@@ -98,19 +98,35 @@ function Editor() {
     }
   }, [])
 
+// 定义样式，四宫格
+  const [editorStyle, setEditorStyle] = useState({
+    flex: 1,
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gridTemplateRows: '1fr 1fr',
+    gridTemplateAreas: `
+      "top left"
+      "front left"
+    `,
+    padding: '10px',
+  });
 
-
-  // useEffect(() => {
-  //   console.log(pointPos);
-  // }, [pointPos])
+  // 定义子组件样式
+  const [viewStyle, setViewStyle] = useState({
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    border: '1px solid #000',
+  });
 
 
   return (
-    <div className='min-h-full flex-1 grid grid-cols-2'>
-      <MainView />
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   />
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  />
-      <View niftiImage={niftiImage} drawImage={drawImage} viewMsg={frontViewMsg} />
+    <div style={{...editorStyle}}>
+      <MainView viewStyle={viewStyle} />
+      <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   />
+      <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  />
+      <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={frontViewMsg} />
     </div>
   )
 }

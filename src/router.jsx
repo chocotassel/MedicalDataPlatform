@@ -18,7 +18,7 @@ function App(){
           path: '/upload',
           element: <Upload />
         },{
-          path: '/',
+          path: '/editor',
           element: <Editor />
         },{
           path: '/login',

@@ -113,7 +113,7 @@ function View(props) {
 
 
   return (
-    <div className='border-2' style={{position: 'relative' }}>
+    <div style={props.viewStyle}>
       <canvas ref={imgRef} >
         Your browser does not support the canvas element.
       </canvas>

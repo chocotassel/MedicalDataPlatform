@@ -15,9 +15,6 @@ function MainView(props) {
   const tool = useSelector((state) => state.tool);
   const dispatch = useDispatch();
 
-  const width = 500
-  const height = 500
-
   // 引用
   const pointRef = useRef(null);
   const xAxisRef = useRef(null);
@@ -31,8 +28,9 @@ function MainView(props) {
   // 点坐标
   const { xSize, ySize, zSize, rate } = modelSize
   const { x, y, z } = pointPos
-  // const { rate } = props
 
+  const width = xSize / 2
+  const height = ySize / 2
 
 
   useEffect(() => {
@@ -153,10 +151,7 @@ function MainView(props) {
 
 
   return (
-    <>
-      <div className='border-2' ref={container}>
-      </div>
-    </>
+    <div ref={container} style={props.viewStyle}></div>
   )
 }
 
