@@ -19,10 +19,6 @@ function PolygonCanvas(props) {
   const [points, setPoints] = useState([]);
   
 
-  useEffect(() => {
-    // draw();
-  }, [points]);
-
   function drawLine(x1, y1, x2, y2) {
     const dx = Math.abs(x2 - x1);
     const dy = Math.abs(y2 - y1);
@@ -73,7 +69,7 @@ function PolygonCanvas(props) {
     if (points.length >= 2 && x < points[0].x + triggerRadius && x > points[0].x - triggerRadius && y < points[0].y + triggerRadius && y > points[0].y - triggerRadius) {
       setDrawing(false);
       setPoints([]);
-      setCanvasStyle(prev => ({
+      props.setCanvasStyle(prev => ({
         ...prev,
         cursor: 'default',
       }))
@@ -93,6 +89,7 @@ function PolygonCanvas(props) {
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       const ctx = canvas.getContext("2d");
+      ctx.strokeStyle = tool.color;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       // 绘制多边形
@@ -109,6 +106,7 @@ function PolygonCanvas(props) {
       points.forEach((point) => {
         ctx.beginPath();
         ctx.arc(point.x, point.y, triggerRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = tool.color;
         ctx.fill();
       });
 
@@ -119,7 +117,7 @@ function PolygonCanvas(props) {
 
       // 触碰到第一个点
       if (points.length >= 2 && x < points[0].x + triggerRadius && x > points[0].x - triggerRadius && y < points[0].y + triggerRadius && y > points[0].y - triggerRadius) {
-        setCanvasStyle(prev => ({
+        props.setCanvasStyle(prev => ({
           ...prev,
           cursor: 'pointer',
         }))
@@ -131,8 +129,8 @@ function PolygonCanvas(props) {
   return (
     <canvas
       ref={polygonRef}
-      width={500}
-      height={300}
+      width={viewMsg.width}
+      height={viewMsg.displayHeight}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       style={{ ...props.canvasStyle, border: "1px solid black", display: tool.type == 3 ? 'block' : 'none' }}

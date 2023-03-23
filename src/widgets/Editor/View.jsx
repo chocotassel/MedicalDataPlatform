@@ -26,8 +26,10 @@ function View(props) {
   // 设置鼠标样式
   useEffect(() => {
     const { type, size, color } = tool;
-    const curser = type ? `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="${size*2}" height="${size*2}"><circle cx="${size}" cy="${size}" r="${size - 1}" fill="none" stroke="${type == 1 ? color : 'white'}" stroke-width="2"/></svg>') ${size} ${size}, auto` : 'crosshair';
-
+    let curser = type ? `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="${size*2}" height="${size*2}"><circle cx="${size}" cy="${size}" r="${size - 1}" fill="none" stroke="${type == 1 ? color : 'white'}" stroke-width="2"/></svg>') ${size} ${size}, auto` : 'crosshair';
+    if (type == 3) {
+      curser = 'default';
+    }
     setCanvasStyle(prevState => ({
       ...prevState,
       cursor: curser,
@@ -117,7 +119,7 @@ function View(props) {
       </canvas>
       <CrossCanvas   drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
       <DrawCanvas    drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
-      <PolygonCanvas drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
+      <PolygonCanvas drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} setCanvasStyle={setCanvasStyle} />
     </div>
   )
 }

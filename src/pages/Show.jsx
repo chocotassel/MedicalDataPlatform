@@ -1,6 +1,6 @@
 import Editor from '../widgets/Editor'
 import { useSelector } from 'react-redux'
-import Login from '../widgets/Login'
+import Login from '../components/Login'
 import { Outlet } from 'react-router'
 
 const Show=()=>{

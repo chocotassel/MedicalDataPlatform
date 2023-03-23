@@ -1,8 +1,8 @@
 import { Layout, Menu, theme } from 'antd';
 import './Home.css'
-import User from '../widgets/User';
+import User from '../components/User';
 import { Outlet,useNavigate } from 'react-router-dom';
-import Workbench from '../widgets/Workbench'
+import Toolbar from '../widgets/Toolbar'
 import Editor from '../widgets/Editor';
 
 
@@ -20,7 +20,7 @@ const App = () => {
         navigate('/optimization')
         break
       case '3': 
-        navigate('/lables')
+        navigate('/labels')
         break
     }
   }
@@ -47,7 +47,7 @@ const App = () => {
             backgroundColor: 'F5F5F5'
           }}
         >
-          <Workbench/>
+          <Toolbar/>
           <Outlet/>
           <Editor />
         </div>

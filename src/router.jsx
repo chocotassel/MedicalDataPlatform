@@ -2,10 +2,10 @@ import { useRoutes} from 'react-router-dom'
 import Home from './pages/Home'
 import Show from './pages/Show';
 import Adjust from './widgets/Adjust'
-import Lables from './widgets/Lables'
-import Login from './widgets/Login'
-import Editor from './widgets/Editor'
+import Labels from './widgets/Labels'
+import Login from './components/Login'
 import Upload from './widgets/Upload';
+import Editor from './widgets/Editor';
 
 function App(){
   let element=useRoutes([{
@@ -28,8 +28,8 @@ function App(){
         path:'/optimization',
         element: <Adjust />
       },{
-        path:'/lables',
-        element: <Lables/>
+        path:'/labels',
+        element: <Labels/>
       }
     ]
   }])

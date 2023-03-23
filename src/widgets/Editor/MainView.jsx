@@ -29,9 +29,9 @@ function MainView(props) {
 
 
   // 点坐标
-  const { xSize, ySize, zSize } = modelSize
+  const { xSize, ySize, zSize, rate } = modelSize
   const { x, y, z } = pointPos
-  const { rate } = props
+  // const { rate } = props
 
 
 

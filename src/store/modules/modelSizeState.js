@@ -7,7 +7,7 @@ export const modelSizeSlice = createSlice({
     xSize: 1,
     ySize: 1,
     zSize: 1,
-    rate: 1,
+    rate: 1
   },
   reducers: {
     setXSize: (state, action) => {

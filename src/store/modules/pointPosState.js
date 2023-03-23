@@ -6,7 +6,7 @@ export const pointPosSlice = createSlice({
   initialState: {
     x: 0,
     y: 0,
-    z: 0,
+    z: 0
   },
   reducers: {
     setX: (state, action) => {
