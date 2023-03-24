@@ -20,7 +20,7 @@ function Editor() {
 
   const [niftiImage, setNiftiImage] = useState(null);
   const [drawImage, setDrawImage] = useState(null);
-  const [size, setSize] = useState({ x: 0, y: 0, z: 0 });
+  const [offset, setOffset] = useState({ x: 0, y: 0, z: 0 });
 
 
   const [topViewMsg, setTopViewMsg]     = useState({ width: 0, height: 0, displayHeight: 0, type: 0, depth: 0 });
@@ -79,7 +79,17 @@ function Editor() {
         // console.log((niftiImage[0][0][0]& 0xffff).toString(2));
         // console.log(uniqueArr)
       
-        return {niftiImage, drawImage, xSize, ySize, zSize, rate: header.pixDims[3] / header.pixDims[1]};
+        return {
+          niftiImage, 
+          drawImage, 
+          xSize, ySize, zSize, 
+          rate: header.pixDims[3] / header.pixDims[1], 
+          offset: {
+            x: Math.abs(header.qoffset_x), 
+            y: Math.abs(header.qoffset_y), 
+            z: Math.abs(header.qoffset_z),
+          },
+        };
       }).then(res => {
         dispatch(setXSize(res.xSize));
         dispatch(setYSize(res.ySize));
@@ -88,7 +98,7 @@ function Editor() {
 
         setNiftiImage(res.niftiImage);
         setDrawImage(res.drawImage)
-        setSize({ x: res.xSize, y: res.ySize, z: res.zSize});
+        setOffset(res.offset);
 
         setTopViewMsg({   width: res.xSize, height: res.ySize, displayHeight: res.ySize           , type: 3, depth: res.zSize });
         setLeftViewMsg({  width: res.ySize, height: res.zSize, displayHeight: res.zSize * res.rate, type: 1, depth: res.xSize });
@@ -123,7 +133,7 @@ function Editor() {
 
   return (
     <div style={{...editorStyle}}>
-      <MainView viewStyle={viewStyle} />
+      <MainView viewStyle={viewStyle} offset={offset} />
       <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   />
       <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  />
       <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={frontViewMsg} />

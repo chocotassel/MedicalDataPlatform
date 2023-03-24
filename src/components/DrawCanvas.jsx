@@ -10,6 +10,7 @@ function CrossCanvas(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const tool = useSelector((state) => state.tool);
   const { rate } = useSelector((state) => state.modelSize);
+  const isdrawing = useSelector((state) => state.drawing);
   const dispatch = useDispatch();
 
 
@@ -23,46 +24,46 @@ function CrossCanvas(props) {
     tempCanvas.height = height;
     const tempCtx = tempCanvas.getContext("2d");
 
-    const ctx2 = drawRef.current.getContext("2d");
-    const imageData2 = ctx2.createImageData(width, height);
+    const ctx = drawRef.current.getContext("2d");
+    const imageData2 = ctx.createImageData(width, height);
     drawRef.current.width = width;
     drawRef.current.height = displayHeight;
 
     for (let a = 0; a < width; a++) {
       for (let b = 0; b < height; b++) {
-        let value2 = null;
+        let value = null;
         switch (type) {
           case 1:
-            value2 = drawImage[pointPos.x][a][b];
+            value = drawImage[pointPos.x][a][b];
             break;
           case 2:
-            value2 = drawImage[a][pointPos.y][b];
+            value = drawImage[a][pointPos.y][b];
             break;
           case 3:
-            value2 = drawImage[a][b][pointPos.z];
+            value = drawImage[a][b][pointPos.z];
             break;
           default:
             break;
         }
         const alpha = 255;
-        const grayValue2 = value2 * 255 % 256
+        const grayValue = value * 255 % 256
 
-        imageData2.data[(a + b * width) * 4 + 0] = grayValue2;
+        imageData2.data[(a + b * width) * 4 + 0] = grayValue;
         imageData2.data[(a + b * width) * 4 + 1] = 0;
         imageData2.data[(a + b * width) * 4 + 2] = 0;
-        imageData2.data[(a + b * width) * 4 + 3] = value2 == 1 ? alpha * 0.6 : 0;
+        imageData2.data[(a + b * width) * 4 + 3] = value > 0 ? alpha * 0.6 : 0;
       }
     }
 
     tempCtx.putImageData(imageData2, 0, 0);
     if (viewMsg.type !== 3) {
-      ctx2.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, displayHeight);
+      ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, displayHeight);
     }
-    else ctx2.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, height);
+    else ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, height);
 
     // 设置画笔大小
-    ctx2.strokeStyle = tool.color;
-    ctx2.lineWidth = tool.size * 2;
+    ctx.strokeStyle = tool.color;
+    ctx.lineWidth = tool.size * 2;
 
   }, [props.drawImage, viewMsg, rate, pointPos.x, pointPos.y, pointPos.z, tool.type, tool.color, tool.size]);
 
@@ -121,7 +122,7 @@ function CrossCanvas(props) {
     }
     else ctx2.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, height);
 
-  }, [drawing, drawPoint])
+  }, [drawing, drawPoint, isdrawing])
 
 
   // 扫描线填充算法
@@ -271,7 +272,7 @@ function CrossCanvas(props) {
       onMouseDown={handleDrawMouseDown}
       onMouseUp={handleDrawMouseUp}
       onMouseMove={handleDrawMouseMove}
-      style={{ ...props.canvasStyle, border: "1px solid black", display: tool.type == 1 || tool.type == 2 ? 'block' : 'none' }}
+      style={{ ...props.canvasStyle, border: "1px solid black", display: tool.type == 1 || tool.type == 2 || tool.type == 3 ? 'block' : 'none' }}
     >
       Your browser does not support the canvas element.
     </canvas>

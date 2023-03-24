@@ -49,8 +49,8 @@ const App = () => {
         <span style={{lineHeight:'34px'}}>X</span>
         <Col span={18}>
           <Slider
-            min={1}
-            max={xSize}
+            min={ 0 }
+            max={ xSize - 1}
             style={{marginLeft:10}}
             value={x}
             onChange={(e)=>dispatch(setX(e))}
@@ -58,8 +58,8 @@ const App = () => {
         </Col>
         <Col>
           <InputNumber
-            min={1}
-            max={xSize}
+            min={ 0 }
+            max={ xSize - 1}
             style={{
               width: 50,
               marginLeft: 10
@@ -73,8 +73,8 @@ const App = () => {
         <span style={{lineHeight:'34px'}}>Y</span>
         <Col span={18}>
           <Slider
-            min={1}
-            max={ySize}
+            min={ 0 }
+            max={ ySize - 1 }
             style={{marginLeft:10}}
             onChange={(e)=>dispatch(setY(e))}
             value={typeof y === 'number' ? y : 0}
@@ -82,8 +82,8 @@ const App = () => {
         </Col>
         <Col>
           <InputNumber
-            min={1}
-            max={ySize}
+            min={ 0 }
+            max={ ySize - 1 }
             style={{
               width: 50,
               marginLeft: 10
@@ -97,8 +97,8 @@ const App = () => {
         <span style={{lineHeight:'34px'}}>Z</span>
         <Col span={18}>
           <Slider
-            min={1}
-            max={zSize}
+            min={ 0 }
+            max={ zSize - 1 }
             style={{marginLeft:10}}
             onChange={(e)=>dispatch(setZ(e))}
             value={typeof z === 'number' ? z : 0}
@@ -106,8 +106,8 @@ const App = () => {
         </Col>
         <Col>
           <InputNumber
-            min={1}
-            max={zSize}
+            min={ 0 }
+            max={ zSize - 1 }
             style={{
               width: 50,
               marginLeft: 10

@@ -29,8 +29,8 @@ function MainView(props) {
   const { xSize, ySize, zSize, rate } = modelSize
   const { x, y, z } = pointPos
 
-  const width = xSize / 2
-  const height = ySize / 2
+  const width = xSize
+  const height = ySize
 
 
   useEffect(() => {
@@ -97,8 +97,7 @@ function MainView(props) {
     const objLoad = new OBJLoader()
     // objLoad.load('/public/objs/nii2mesh_0b2be9e0-886b-4144-99f0-8bb4c6eaa848.obj', function(obj) {
     objLoad.load('/public/objs/nii2mesh_0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.obj', function(obj) {
-      // obj.scale.set(0.4, 0.4, -0.4)
-      obj.position.set(384, 384, 54)
+      obj.position.set(props.offset.x, props.offset.y, props.offset.z)
       scene.add(obj)
     })
 
@@ -126,7 +125,7 @@ function MainView(props) {
       cancelAnimationFrame(requestRef.current);
       container.current.removeChild(renderer.domElement);
     };
-  }, [xSize, ySize, zSize, rate]);
+  }, [xSize, ySize, zSize, rate, props.offset]);
 
 
 
@@ -134,16 +133,16 @@ function MainView(props) {
     pointRef.current.geometry.attributes.position.setXYZ(0, x, y, z);
     pointRef.current.geometry.attributes.position.needsUpdate = true;
     xAxisRef.current.geometry.setFromPoints([
-      new THREE.Vector3(0, y, z),
-      new THREE.Vector3(xSize, y, z),
+      new THREE.Vector3(0, y, z * rate),
+      new THREE.Vector3(xSize, y, z * rate),
     ]);
     yAxisRef.current.geometry.setFromPoints([
-      new THREE.Vector3(x, 0, z),
-      new THREE.Vector3(x, ySize, z),
+      new THREE.Vector3(x, 0, z * rate),
+      new THREE.Vector3(x, ySize, z * rate),
     ]);
     zAxisRef.current.geometry.setFromPoints([
-      new THREE.Vector3(x, y, 0),
-      new THREE.Vector3(x, y, zSize),
+      new THREE.Vector3(x, y, 0 * rate),
+      new THREE.Vector3(x, y, zSize * rate),
     ]);
     cameraRef.current.lookAt(x, y, z);
   }, [x, y, z])
