@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Slider, Select } from 'antd';
 import * as nifti from 'nifti-reader-js';
+import * as glMatrix from "gl-matrix";
 
 import MainView from './Editor/MainView'
 import View from './Editor/View'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setXSize, setYSize, setZSize, setRate } from '../store/modules/modelSizeState';
+
+
+
 
 function Editor() {
   // redux
@@ -38,20 +41,24 @@ function Editor() {
         const header = nifti.readHeader(arrayBuffer);
         console.log(header);
 
+
         // 读取NIfTI文件的图像数据
         const imageData = nifti.readImage(header, arrayBuffer);
         console.log(imageData);
 
+
+
         // 将ArrayBuffer类型的图像数据转换为Int16Array类型的图像数据
-        const imageTypedArray = new Int16Array(imageData);
+        const imageTypedArray = new Uint8Array(imageData);
         console.log(imageTypedArray);
+        // const imageTypedArray = transformedData;
 
         // console.log(header.affine);
 
         const xSize = header.dims[1];
         const ySize = header.dims[2];
         const zSize = header.dims[3];
-        // const uniqueArr = [];
+        const uniqueArr = [];
 
         // 将Int16Array类型的图像数据转换为三维数组
         const niftiImage = new Array(xSize);
@@ -66,6 +73,7 @@ function Editor() {
               const index = x + y * xSize + z * xSize * ySize;
               niftiImage[x][y][z] = imageTypedArray[index];
               drawImage[x][y][z] = 0;
+
               // if(niftiImage[x][y][z] > 0 && niftiImage[x][y][z] < 2) {
               //   console.log(niftiImage[x][y][z] & 0xffff);
               // }

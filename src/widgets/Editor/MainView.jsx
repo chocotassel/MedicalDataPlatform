@@ -32,6 +32,9 @@ function MainView(props) {
   const width = xSize
   const height = ySize
 
+  // 模型
+  const src = '/public/objs/nii2mesh_0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.obj'
+
 
   useEffect(() => {
     // 初始化
@@ -43,7 +46,7 @@ function MainView(props) {
       0.1,
       10000
     );
-    camera.position.set(xSize, ySize, zSize);
+    camera.position.set(xSize, ySize, zSize * rate);
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
     const renderer = new THREE.WebGLRenderer();
@@ -96,7 +99,7 @@ function MainView(props) {
     // 模型加载
     const objLoad = new OBJLoader()
     // objLoad.load('/public/objs/nii2mesh_0b2be9e0-886b-4144-99f0-8bb4c6eaa848.obj', function(obj) {
-    objLoad.load('/public/objs/nii2mesh_0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.obj', function(obj) {
+    objLoad.load(src, function(obj) {
       obj.position.set(props.offset.x, props.offset.y, props.offset.z)
       scene.add(obj)
     })
