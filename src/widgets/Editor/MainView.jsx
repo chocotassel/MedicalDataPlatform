@@ -13,6 +13,7 @@ function MainView(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const modelSize = useSelector((state) => state.modelSize);
   const tool = useSelector((state) => state.tool);
+  const scaleFactor = useSelector((state) => state.scaleFactor);
   const dispatch = useDispatch();
 
   // 引用
@@ -29,8 +30,8 @@ function MainView(props) {
   const { xSize, ySize, zSize, rate } = modelSize
   const { x, y, z } = pointPos
 
-  const width = xSize
-  const height = ySize
+  const width = xSize * scaleFactor;
+  const height = ySize * scaleFactor;
 
   // 模型
   const src = '/public/objs/nii2mesh_0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.obj'
@@ -47,7 +48,7 @@ function MainView(props) {
       10000
     );
     camera.position.set(xSize, ySize, zSize * rate);
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(new THREE.Vector3(x, y, z));
     cameraRef.current = camera;
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(width, height);
@@ -98,7 +99,6 @@ function MainView(props) {
 
     // 模型加载
     const objLoad = new OBJLoader()
-    // objLoad.load('/public/objs/nii2mesh_0b2be9e0-886b-4144-99f0-8bb4c6eaa848.obj', function(obj) {
     objLoad.load(src, function(obj) {
       obj.position.set(props.offset.x, props.offset.y, props.offset.z)
       scene.add(obj)
@@ -111,10 +111,18 @@ function MainView(props) {
     // floor.rotation.x = -Math.PI / 2; // 将地板旋转90度，使其水平放置
     // scene.add(floor); // 将地板添加到场景中
 
-    // 创建灯光
-    var light = new THREE.DirectionalLight(0xffffff, 1); // 颜色为白色，强度为1
-    light.position.set(0, 5, 0); // 设置灯光的位置在上方
-    scene.add(light); // 将灯光添加到场景中
+    // 创建灯光 : 循环八次，分别创建每个角落的灯光
+    for (var i = 0; i < 8; i++) {
+      // 计算每个顶点的坐标
+      var x = (i & 1) ? xSize : 0;
+      var y = (i & 2) ? ySize : 0;
+      var z = (i & 4) ? zSize : 0;
+
+      // 创建灯光
+      var light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(x, y, z);
+      scene.add(light);
+    }
 
     // 动画
     const animate = () => {

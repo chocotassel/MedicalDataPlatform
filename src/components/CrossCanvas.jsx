@@ -10,6 +10,7 @@ function CrossCanvas(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const tool = useSelector((state) => state.tool);
   const { rate } = useSelector((state) => state.modelSize);
+  const scaleFactor = useSelector((state) => state.scaleFactor);
   const dispatch = useDispatch();
 
   const crossRef = useRef(null);
@@ -40,6 +41,8 @@ function CrossCanvas(props) {
       default:
         break;
     }
+    a = a * scaleFactor;
+    b = b * scaleFactor;
     drawHorizontalLine(ctx, b, canvas.width);
     drawVerticalLine(ctx, a, canvas.height);
   }, [pointPos.x, pointPos.y, pointPos.z, tool.type]);
@@ -66,12 +69,11 @@ function CrossCanvas(props) {
 
   function handleLocateMouseMove(event) {
     const rect = crossRef.current.getBoundingClientRect();
-    let a = Math.round(event.clientX - rect.left);
-    let b = viewMsg.type == 3 ? Math.round(event.clientY - rect.top) : Math.round((event.clientY - rect.top) / rate);
-    a = a > viewMsg.width - 1 ? viewMsg.width - 1 : a;
-    b = b > viewMsg.height - 1 ? viewMsg.height - 1 : b;
-    a = a < 0 ? 0 : a;
-    b = b < 0 ? 0 : b;
+    let a = Math.round((event.clientX - rect.left) / scaleFactor);
+    let b = viewMsg.type == 3 ? Math.round((event.clientY - rect.top) / scaleFactor) : Math.round((event.clientY - rect.top) / scaleFactor / rate);
+    a = a > viewMsg.displayWidth - 1 ? viewMsg.displayWidth - 1 : a < 0 ? 0 : a;
+    b = b > viewMsg.displayHeight - 1 ? viewMsg.displayHeight - 1 : b < 0 ? 0 : b;
+
     switch (viewMsg.type) {
       case 1:
         dispatch(setY(a));
@@ -99,9 +101,7 @@ function CrossCanvas(props) {
   // 滚轮事件
   useEffect(() => {
     const canvas = crossRef.current;
-    
     canvas.addEventListener("wheel", props.handleScroll, { passive: false });
-
     return () => {
       canvas.removeEventListener("wheel", props.handleScroll, { passive: false });
     };
@@ -111,12 +111,12 @@ function CrossCanvas(props) {
   return (
     <canvas
       ref={crossRef}
-      width={viewMsg.width}
+      width={viewMsg.displayWidth}
       height={viewMsg.displayHeight}
       onMouseDown={handleLocateMouseDown}
-      style={{ ...props.canvasStyle, border: "1px solid black", display: tool.type == 0 ? 'block' : 'none' }}
+      style={{ ...props.canvasStyle, display: tool.type == 0 ? 'block' : 'none' }}
     >
-      Your browser does not support the canvas element.
+      Your browser does not support the canvas element. CrossCanvas
     </canvas>
   );
 }

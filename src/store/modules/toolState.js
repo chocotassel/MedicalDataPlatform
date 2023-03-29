@@ -5,7 +5,7 @@ export const toolSlice = createSlice({
   name: 'tool',
   initialState:{
     type: 0,
-    color: 'red',
+    color: '#ff0000',
     size: 8,
   },
   reducers: {

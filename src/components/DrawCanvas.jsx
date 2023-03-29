@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { setX, setY, setZ } from '../store/modules/pointPosState';
+import { RGB } from '../utils/RGB';
 
 function CrossCanvas(props) {
   // props
@@ -10,24 +11,31 @@ function CrossCanvas(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const tool = useSelector((state) => state.tool);
   const { rate } = useSelector((state) => state.modelSize);
-  const isdrawing = useSelector((state) => state.drawing);
+  const scaleFactor = useSelector((state) => state.scaleFactor);
   const dispatch = useDispatch();
 
 
+
+  // 鼠标绘制图像
+  const drawRef = useRef(null);
+  const [drawing, setDrawing] = useState(false);
+  const [drawPoint, setDrawPoint] = useState({ a: 0, b: 0 });
+
+
   useEffect(() => {
-    if(tool.type !== 1) return;
+    if(tool.type !== 1 && tool.type != 2) return;
     const { drawImage } = props;
-    const { width, height, displayHeight, type } = props.viewMsg;
+    const { width, height, displayWidth, displayHeight, type } = props.viewMsg;
+
+    const ctx = drawRef.current.getContext("2d");
+    const imageData2 = ctx.createImageData(width, height);
+    drawRef.current.width = displayWidth;
+    drawRef.current.height = displayHeight;
 
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = width;
     tempCanvas.height = height;
     const tempCtx = tempCanvas.getContext("2d");
-
-    const ctx = drawRef.current.getContext("2d");
-    const imageData2 = ctx.createImageData(width, height);
-    drawRef.current.width = width;
-    drawRef.current.height = displayHeight;
 
     for (let a = 0; a < width; a++) {
       for (let b = 0; b < height; b++) {
@@ -46,83 +54,24 @@ function CrossCanvas(props) {
             break;
         }
         const alpha = 255;
-        const grayValue = value * 255 % 256
+        const color = RGB.createWithHex(tool.color);
 
-        imageData2.data[(a + b * width) * 4 + 0] = grayValue;
-        imageData2.data[(a + b * width) * 4 + 1] = 0;
-        imageData2.data[(a + b * width) * 4 + 2] = 0;
+        imageData2.data[(a + b * width) * 4 + 0] = color.r;
+        imageData2.data[(a + b * width) * 4 + 1] = color.g;
+        imageData2.data[(a + b * width) * 4 + 2] = color.b;
         imageData2.data[(a + b * width) * 4 + 3] = value > 0 ? alpha * 0.6 : 0;
       }
     }
 
     tempCtx.putImageData(imageData2, 0, 0);
-    if (viewMsg.type !== 3) {
-      ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, displayHeight);
-    }
-    else ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, height);
+    ctx.clearRect(0, 0, drawRef.current.width, drawRef.current.height);
+    ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
+    ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
+    ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
 
-    // 设置画笔大小
-    ctx.strokeStyle = tool.color;
-    ctx.lineWidth = tool.size * 2;
-
-  }, [props.drawImage, viewMsg, rate, pointPos.x, pointPos.y, pointPos.z, tool.type, tool.color, tool.size]);
+  }, [props.drawImage, drawing, drawPoint, viewMsg, rate, pointPos.x, pointPos.y, pointPos.z, tool.type, tool.color, tool.size]);
 
 
-
-  // 鼠标绘制图像
-  const drawRef = useRef(null);
-  const [drawing, setDrawing] = useState(false);
-  const [drawPoint, setDrawPoint] = useState({ a: 0, b: 0 });
-
-  useEffect(() => {
-    if (tool.type != 1 && tool.type != 2) return;
-    const {width, height, displayHeight, type} = viewMsg;
-    const drawImage = props.drawImage;
-
-    const ctx2 = drawRef.current.getContext("2d");
-    ctx2.clearRect(0, 0, drawRef.current.width, drawRef.current.height);
-    const imageData2 = ctx2.createImageData(width, height);
-
-    const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = width;
-    tempCanvas.height = height;
-    const tempCtx = tempCanvas.getContext("2d");
-
-    for (let a = 0; a < width; a++) {
-      for (let b = 0; b < height; b++) {
-        let value2 = null;
-        switch (type) {
-          case 1:
-            value2 = drawImage[pointPos.x][a][b];
-            break;
-          case 2:
-            value2 = drawImage[a][pointPos.y][b];
-            break;
-          case 3:
-            value2 = drawImage[a][b][pointPos.z];
-            break;
-          default:
-            break;
-        }
-        const alpha = 255;
-        const grayValue2 = value2 * 255 % 256
-
-        imageData2.data[(a + b * width) * 4 + 0] = grayValue2;
-        imageData2.data[(a + b * width) * 4 + 1] = 0;
-        imageData2.data[(a + b * width) * 4 + 2] = 0;
-        imageData2.data[(a + b * width) * 4 + 3] = value2 == 1 ? alpha * 0.6 : 0;
-      }
-    }
-
-    tempCtx.putImageData(imageData2, 0, 0);
-    if (viewMsg.type !== 3) {
-      ctx2.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, displayHeight);
-      // ctx2.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, height); 
-      // ctx2.scale(1, rate)
-    }
-    else ctx2.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, height);
-
-  }, [drawing, drawPoint, isdrawing])
 
 
   // 扫描线填充算法
@@ -159,7 +108,9 @@ function CrossCanvas(props) {
     }
   }
   function drawPixel(a, b) {
-    const flag = tool.type
+    const flag = tool.type == 1 ? 1 : 0;
+    a = Math.floor(a > viewMsg.width - 1 ? viewMsg.width - 1 : a < 0 ? 0 : a);
+    b = Math.floor(b > viewMsg.height - 1 ? viewMsg.height - 1 : b < 0 ? 0 : b);
     // 绘制像素点
     switch (viewMsg.type) {
       case 1:
@@ -231,12 +182,8 @@ function CrossCanvas(props) {
   
   
   function handleDrawMouseDown(event) {
-    // const canvas = drawRef.current;
-    // const ctx = canvas.getContext('2d');
-    // ctx.beginPath();
-    const a = event.nativeEvent.offsetX;
-    const b = viewMsg.type == 3 ? event.nativeEvent.offsetY : Math.round(event.nativeEvent.offsetY / rate);
-    // ctx.moveTo(a, b);
+    let a = event.nativeEvent.offsetX / scaleFactor;
+    let b = viewMsg.type == 3 ? event.nativeEvent.offsetY / scaleFactor : Math.round(event.nativeEvent.offsetY / scaleFactor / rate);
     drawSolidCircle(a, b, tool.size);
     setDrawPoint({ a, b });
     setDrawing(true);
@@ -249,19 +196,25 @@ function CrossCanvas(props) {
   
   function handleDrawMouseMove(event) {
     if (drawing) {
-      // const canvas = drawRef.current;
-      // const ctx = canvas.getContext('2d');
-      const a = event.nativeEvent.offsetX;
-      const b = viewMsg.type == 3 ? event.nativeEvent.offsetY : Math.round(event.nativeEvent.offsetY / rate);
+      let a = event.nativeEvent.offsetX / scaleFactor;
+      let b = viewMsg.type == 3 ? event.nativeEvent.offsetY / scaleFactor : Math.round(event.nativeEvent.offsetY / scaleFactor / rate);
       drawSolidCircle(a, b, tool.size);
       setDrawPoint(prev => {
         drawParallelLine(a, b, prev.a, prev.b, tool.size);
         return { a, b };
       });
-      // ctx.lineTo(a, b);
-      // ctx.stroke();
     }
   }
+
+
+  // 滚轮事件
+  useEffect(() => {
+    const canvas = drawRef.current;
+    canvas.addEventListener("wheel", props.handleScroll, { passive: false });
+    return () => {
+      canvas.removeEventListener("wheel", props.handleScroll, { passive: false });
+    };
+  }, [viewMsg, pointPos.x, pointPos.y, pointPos.z, tool.type]);
 
 
   return (
@@ -272,9 +225,9 @@ function CrossCanvas(props) {
       onMouseDown={handleDrawMouseDown}
       onMouseUp={handleDrawMouseUp}
       onMouseMove={handleDrawMouseMove}
-      style={{ ...props.canvasStyle, border: "1px solid black", display: tool.type == 1 || tool.type == 2 || tool.type == 3 ? 'block' : 'none' }}
+      style={{ ...props.canvasStyle, display: tool.type == 1 || tool.type == 2 || tool.type == 3 ? 'block' : 'none' }}
     >
-      Your browser does not support the canvas element.
+      Your browser does not support the canvas element. DrawCanvas
     </canvas>
   );
 }

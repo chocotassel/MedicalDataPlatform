@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
+import { RGB } from '/src/utils/RGB';
+
+
 function PolygonCanvas(props) {
   // props
   const viewMsg = props.viewMsg;
@@ -9,7 +12,7 @@ function PolygonCanvas(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const tool = useSelector((state) => state.tool);
   const { rate } = useSelector((state) => state.modelSize);
-  const isdrawing = useSelector((state) => state.drawing);
+  const scaleFactor = useSelector((state) => state.scaleFactor);
   const dispatch = useDispatch();
 
 
@@ -25,17 +28,17 @@ function PolygonCanvas(props) {
   useEffect(() => {
     if(tool.type !== 3) return;
     const { drawImage } = props;
-    const { width, height, displayHeight, type } = props.viewMsg;
+    const { width, height, displayWidth, displayHeight, type } = props.viewMsg;
+
+    const ctx = polygonRef.current.getContext("2d");
+    const imageData2 = ctx.createImageData(width, height);
+    polygonRef.current.width = displayWidth;
+    polygonRef.current.height = displayHeight;
 
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = width;
     tempCanvas.height = height;
     const tempCtx = tempCanvas.getContext("2d");
-
-    const ctx = polygonRef.current.getContext("2d");
-    const imageData2 = ctx.createImageData(width, height);
-    polygonRef.current.width = width;
-    polygonRef.current.height = displayHeight;
 
     for (let a = 0; a < width; a++) {
       for (let b = 0; b < height; b++) {
@@ -54,20 +57,18 @@ function PolygonCanvas(props) {
             break;
         }
         const alpha = 255;
-        const grayValue = value * 255 % 256
+        const color = RGB.createWithHex(tool.color);
 
-        imageData2.data[(a + b * width) * 4 + 0] = grayValue;
-        imageData2.data[(a + b * width) * 4 + 1] = 0;
-        imageData2.data[(a + b * width) * 4 + 2] = 0;
+        imageData2.data[(a + b * width) * 4 + 0] = color.r;
+        imageData2.data[(a + b * width) * 4 + 1] = color.g;
+        imageData2.data[(a + b * width) * 4 + 2] = color.b;
         imageData2.data[(a + b * width) * 4 + 3] = value > 0 ? alpha * 0.6 : 0;
       }
     }
 
     tempCtx.putImageData(imageData2, 0, 0);
-    if (viewMsg.type !== 3) {
-      ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, displayHeight);
-    }
-    else ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, height);
+    ctx.clearRect(0, 0, polygonRef.current.width, polygonRef.current.height);
+    ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
 
     // 设置画笔大小
     ctx.strokeStyle = tool.color;
@@ -76,86 +77,11 @@ function PolygonCanvas(props) {
 
 
 
-  // // 扫描线填充算法
-  // class Edge {
-  //   constructor(yMin, yMax, x, slopeInverse) {
-  //     this.yMin = yMin;
-  //     this.yMax = yMax;
-  //     this.x = x;
-  //     this.slopeInverse = slopeInverse;
-  //   }
-  // }
-  // // 构建边表
-  // function buildEdgeTable(vertices) {
-  //   const edgeTable = new Map();
-  
-  //   for (let i = 0; i < vertices.length; i++) {
-  //     let currentVertex = vertices[i];
-  //     let nextVertex = vertices[(i + 1) % vertices.length];
-  
-  //     if (currentVertex.y === nextVertex.y) {
-  //       continue;
-  //     }
-  
-  //     let yMin = Math.min(currentVertex.y, nextVertex.y);
-  //     let yMax = Math.max(currentVertex.y, nextVertex.y);
-  //     let x = currentVertex.y < nextVertex.y ? currentVertex.x : nextVertex.x;
-  //     let slopeInverse = (nextVertex.x - currentVertex.x) / (nextVertex.y - currentVertex.y);
-  
-  //     const edge = new Edge(yMin, yMax, x, slopeInverse);
-  
-  //     if (!edgeTable.has(yMin)) {
-  //       edgeTable.set(yMin, []);
-  //     }
-  
-  //     edgeTable.get(yMin).push(edge);
-  //   }
-  
-  //   return edgeTable;
-  // }
-  
-  
-  // // 更新活动边表
-  // function updateAET(aet, y) {
-  //   aet = aet.filter(edge => edge.yMax !== y);
-  //   aet.forEach(edge => (edge.x = Math.floor(edge.x + edge.slopeInverse)));
-  //   return aet;
-  // }
-
-  // // 扫描线填充
-  // function scanLineFill(vertices) {
-  //   vertices = vertices.map(vertex => ({ x: Math.floor(vertex.x), y: Math.floor(vertex.y) }));
-
-  //   const edgeTable = buildEdgeTable(vertices);
-  //   let aet = [];
-
-  //   let yMin = Math.min(...Array.from(edgeTable.keys()));
-  //   let yMax = Math.max(...Array.from(edgeTable.keys()));
-  
-  //   for (let y = yMin; y <= yMax; y++) {
-  //     if (edgeTable.has(y)) {
-  //       aet = aet.concat(edgeTable.get(y));
-  //     }
-  
-  //     aet.sort((a, b) => a.x - b.x);
-  
-  //     for (let i = 0; i < aet.length; i += 2) {
-  //       let xStart = Math.ceil(aet[i].x);
-  //       let xEnd = Math.floor(aet[i + 1].x);
-  
-  //       for (let x = xStart; x <= xEnd; x++) {
-  //         drawPixel(x, y);
-  //       }
-  //     }
-  
-  //     aet = updateAET(aet, y);
-  //   }
-  // }
 
   function drawPixel(a, b) {
     const flag = tool.type
-    a = Math.floor(a);
-    b = Math.floor(b);
+    a = Math.floor(a > viewMsg.width - 1 ? viewMsg.width - 1 : a < 0 ? 0 : a);
+    b = Math.floor(b > viewMsg.height - 1 ? viewMsg.height - 1 : b < 0 ? 0 : b);
     // 绘制像素点
     switch (viewMsg.type) {
       case 1:
@@ -177,18 +103,10 @@ function PolygonCanvas(props) {
     if (points.length < 3) {
       return;
     }
-
-    // 绘制多边形边框
-    const ctx = polygonRef.current.getContext('2d');
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
+    for (let i = 0; i < points.length; i++) {
+      points[i].x = Math.floor(points[i].x / scaleFactor);
+      points[i].y = Math.floor(points[i].y / scaleFactor);
     }
-
-    ctx.closePath();
-    ctx.stroke();
 
     // 扫描线填充算法
     let minY = points[0].y;
@@ -294,6 +212,16 @@ function PolygonCanvas(props) {
   }
 
 
+  // 滚轮事件
+  useEffect(() => {
+    const canvas = polygonRef.current;
+    canvas.addEventListener("wheel", props.handleScroll, { passive: false });
+    return () => {
+      canvas.removeEventListener("wheel", props.handleScroll, { passive: false });
+    };
+  }, [viewMsg, pointPos.x, pointPos.y, pointPos.z, tool.type]);
+
+
   return (
     <canvas
       ref={polygonRef}
@@ -301,9 +229,9 @@ function PolygonCanvas(props) {
       height={viewMsg.displayHeight}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
-      style={{ ...props.canvasStyle, border: "1px solid black", display: tool.type == 3 ? 'block' : 'none' }}
+      style={{ ...props.canvasStyle, display: tool.type == 3 ? 'block' : 'none' }}
     >
-      Your browser does not support the canvas element.
+      Your browser does not support the canvas element. PolygonCanvas
     </canvas>
   )
 }

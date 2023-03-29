@@ -5,6 +5,8 @@ import PolygonCanvas from '../../components/PolygonCanvas';
 import { useDispatch, useSelector } from 'react-redux';
 import { setX, setY, setZ } from '../../store/modules/pointPosState';
 
+import { RGB } from '/src/utils/RGB';
+
 function View(props) {
   // props
   const viewMsg = props.viewMsg;
@@ -26,13 +28,15 @@ function View(props) {
   // 设置鼠标样式
   useEffect(() => {
     const { type, size, color } = tool;
-    let curser = type ? `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="${size*2}" height="${size*2}"><circle cx="${size}" cy="${size}" r="${size - 1}" fill="none" stroke="${type == 1 ? color : 'white'}" stroke-width="2"/></svg>') ${size} ${size}, auto` : 'crosshair';
+    const rgb = RGB.createWithHex(color)
+    let cursor = type ? `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="${size*2}" height="${size*2}"><circle cx="${size}" cy="${size}" r="${size/2}" fill="none" stroke="${type == 1 ? rgb.toRGB() : 'white'}" stroke-width="2"/></svg>') ${size} ${size}, auto` : 'crosshair';
+    
     if (type == 3) {
-      curser = 'default';
+      cursor = 'default';
     }
     setCanvasStyle(prevState => ({
       ...prevState,
-      cursor: curser,
+      cursor: cursor,
     }))
   }, [tool.type, tool.size, tool.color])
 
@@ -63,11 +67,11 @@ function View(props) {
     if ( props.niftiImage != null && props.drawImage != null) {
 
       const { niftiImage, drawImage } = props;
-      const { width, height, displayHeight, type } = props.viewMsg;
+      const { width, height, displayWidth, displayHeight, type } = props.viewMsg;
       
-      const ctx1 = imgRef.current.getContext('2d');
-      const imageData1 = ctx1.createImageData(width, height);
-      imgRef.current.width = width;
+      const ctx = imgRef.current.getContext('2d');
+      const imageData1 = ctx.createImageData(width, height);
+      imgRef.current.width = displayWidth;
       imgRef.current.height = displayHeight;
       // console.log(viewMsg);
 
@@ -79,33 +83,31 @@ function View(props) {
 
       for (let a = 0; a < width; a++) {
         for (let b = 0; b < height; b++) {
-          let value1 = null;
+          let value = null;
           switch (viewMsg.type) {
             case 1:
-              value1 = niftiImage[pointPos.x][a][b];
+              value = niftiImage[pointPos.x][a][b];
               break;
             case 2:
-              value1 = niftiImage[a][pointPos.y][b];
+              value = niftiImage[a][pointPos.y][b];
               break;
             case 3:
-              value1 = niftiImage[a][b][pointPos.z];
+              value = niftiImage[a][b][pointPos.z];
               break;
             default:
               break;
           }
           const alpha = 255;
-          // const grayValue1 = value1 & 0xff 
-          // const grayValue1 = (value1 + 32768) % 256 * 255 % 256
-          const grayValue1 = value1 * 255 % 256;
-          imageData1.data[(a + b * width) * 4 + 0] = grayValue1;
-          imageData1.data[(a + b * width) * 4 + 1] = grayValue1;
-          imageData1.data[(a + b * width) * 4 + 2] = grayValue1;
+          const rgb = RGB.mapIntegerToColor(value, 'warm');
+
+          imageData1.data[(a + b * width) * 4 + 0] = rgb.r;
+          imageData1.data[(a + b * width) * 4 + 1] = rgb.g;
+          imageData1.data[(a + b * width) * 4 + 2] = rgb.b;
           imageData1.data[(a + b * width) * 4 + 3] = alpha;
         }
       }
       tempCtx.putImageData(imageData1, 0, 0);
-      if (type !== 3) ctx1.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, displayHeight);
-      else ctx1.drawImage(tempCanvas, 0, 0, width, height, 0, 0, width, height);
+      ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
       
     }
   }, [props.niftiImage, tool.type, pointPos.x, pointPos.y, pointPos.z])
@@ -114,12 +116,12 @@ function View(props) {
 
   return (
     <div style={props.viewStyle}>
+      <CrossCanvas   drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} style={{display: 'none'}} />
+      <DrawCanvas    drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
+      <PolygonCanvas drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} setCanvasStyle={setCanvasStyle} />
       <canvas ref={imgRef} >
         Your browser does not support the canvas element.
       </canvas>
-      <CrossCanvas   drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
-      <DrawCanvas    drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
-      <PolygonCanvas drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} setCanvasStyle={setCanvasStyle} />
     </div>
   )
 }

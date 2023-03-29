@@ -4,6 +4,7 @@ import pointPosSlice from './modules/pointPosState'
 import toolSlice from './modules/toolState'
 import modelSizeSlice from './modules/modelSizeState'
 import drawingSlice from './modules/drawingState'
+import scaleFactorSlice from './modules/scaleFactorState'
 
 export default configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
     pointPos: pointPosSlice,
     tool: toolSlice,
     modelSize: modelSizeSlice,
-    drawing: drawingSlice
+    drawing: drawingSlice,
+    scaleFactor: scaleFactorSlice,
   }
 })
