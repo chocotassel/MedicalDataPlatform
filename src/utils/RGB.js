@@ -104,9 +104,13 @@ export class RGB {
       'winter': [195, 225, 255, 285, 315, 345]
     };
 
-    if (!(colorSeries in series)) {
+    if (colorSeries === 'gray') {
+      return RGB.mapIntegerToGray(i);
+    }
+    else if (!(colorSeries in series)) {
       colorSeries = 'rainbow';
     }
+
     let hues = series[colorSeries];
     let hue;
     if (hues.length == 2) {
@@ -121,5 +125,15 @@ export class RGB {
 
     let rgb = RGB.hsv2rgb(hue, saturation, value);
     return rgb;
+  }
+
+  // 将16映射到灰度
+  static mapIntegerToGray(i) {
+    i = Math.round(i % 16);
+    if (i === 0) {
+      return { r: 0, g: 0, b: 0 };
+    }
+    let gray = i * 16;
+    return { r: gray, g: gray, b: gray };
   }
 }

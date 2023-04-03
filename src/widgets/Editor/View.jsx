@@ -99,7 +99,7 @@ function View(props) {
               break;
           }
           const alpha = 255;
-          const rgb = RGB.mapIntegerToColor(value, 'warm');
+          const rgb = RGB.mapIntegerToColor(value, 'gray');
 
           imageData1.data[(a + b * width) * 4 + 0] = rgb.r;
           imageData1.data[(a + b * width) * 4 + 1] = rgb.g;
