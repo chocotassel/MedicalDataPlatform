@@ -69,10 +69,12 @@ function CrossCanvas(props) {
 
   function handleLocateMouseMove(event) {
     const rect = crossRef.current.getBoundingClientRect();
-    let a = Math.round((event.clientX - rect.left) / scaleFactor);
-    let b = viewMsg.type == 3 ? Math.round((event.clientY - rect.top) / scaleFactor) : Math.round((event.clientY - rect.top) / scaleFactor / rate);
+    let a = event.clientX - rect.left;
+    let b = event.clientY - rect.top;
     a = a > viewMsg.displayWidth - 1 ? viewMsg.displayWidth - 1 : a < 0 ? 0 : a;
     b = b > viewMsg.displayHeight - 1 ? viewMsg.displayHeight - 1 : b < 0 ? 0 : b;
+    a = Math.round(a / scaleFactor);
+    b = viewMsg.type == 3 ? Math.round(b / scaleFactor) : Math.round(b / scaleFactor / rate);
 
     switch (viewMsg.type) {
       case 1:

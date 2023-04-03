@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import CrossCanvas from '../../components/CrossCanvas';
 import DrawCanvas from '../../components/DrawCanvas';
 import PolygonCanvas from '../../components/PolygonCanvas';
+import RangingCanvas from '../../components/RangingCanvas';
 import { useDispatch, useSelector } from 'react-redux';
 import { setX, setY, setZ } from '../../store/modules/pointPosState';
 
@@ -119,6 +120,7 @@ function View(props) {
       <CrossCanvas   drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} style={{display: 'none'}} />
       <DrawCanvas    drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
       <PolygonCanvas drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} setCanvasStyle={setCanvasStyle} />
+      <RangingCanvas drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} setCanvasStyle={setCanvasStyle} />
       <canvas ref={imgRef} >
         Your browser does not support the canvas element.
       </canvas>

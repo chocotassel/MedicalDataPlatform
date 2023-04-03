@@ -27,8 +27,12 @@ function MainView(props) {
 
 
   // 点坐标
-  const { xSize, ySize, zSize, rate } = modelSize
-  const { x, y, z } = pointPos
+  let { xSize, ySize, zSize, rate, scaleRate } = modelSize
+  let { x, y, z } = pointPos
+
+  x = ( xSize - x ) * scaleRate;
+  y = y * scaleRate;
+  z = z * scaleRate;
 
   const width = xSize * scaleFactor;
   const height = ySize * scaleFactor;
@@ -38,6 +42,7 @@ function MainView(props) {
 
 
   useEffect(() => {
+
     // 初始化
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
@@ -112,17 +117,20 @@ function MainView(props) {
     // scene.add(floor); // 将地板添加到场景中
 
     // 创建灯光 : 循环八次，分别创建每个角落的灯光
-    for (var i = 0; i < 8; i++) {
-      // 计算每个顶点的坐标
-      var x = (i & 1) ? xSize : 0;
-      var y = (i & 2) ? ySize : 0;
-      var z = (i & 4) ? zSize : 0;
+    var light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(0, 0, 10);
+    scene.add(light);
+    // for (var i = 0; i < 8; i++) {
+    //   // 计算每个顶点的坐标
+    //   var x = (i & 1) ? xSize : 0;
+    //   var y = (i & 2) ? ySize : 0;
+    //   var z = (i & 4) ? zSize : 0;
 
-      // 创建灯光
-      var light = new THREE.DirectionalLight(0xffffff, 1);
-      light.position.set(x, y, z);
-      scene.add(light);
-    }
+    //   // 创建灯光
+    //   var light = new THREE.DirectionalLight(0xffffff, 1);
+    //   light.position.set(x, y, z);
+    //   scene.add(light);
+    // }
 
     // 动画
     const animate = () => {

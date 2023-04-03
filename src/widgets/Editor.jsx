@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import * as nifti from 'nifti-reader-js';
-import * as glMatrix from "gl-matrix";
 import n2a from '/src/utils/n2a.js'
 
 import MainView from './Editor/MainView'
@@ -8,7 +7,7 @@ import VtkDataView from './Editor/VtkDataView'
 import View from './Editor/View'
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setXSize, setYSize, setZSize, setRate } from '../store/modules/modelSizeState';
+import { setXSize, setYSize, setZSize, setRate, setScaleRate } from '../store/modules/modelSizeState';
 import { setScaleFactor } from '../store/modules/scaleFactorState';
 
 
@@ -68,6 +67,7 @@ function Editor() {
           drawImage, 
           xSize, ySize, zSize, 
           rate: header.pixDims[3] / header.pixDims[1], 
+          scaleRate: header.pixDims[1],
           offset: {
             x: Math.abs(header.qoffset_x), 
             y: Math.abs(header.qoffset_y), 
@@ -78,7 +78,8 @@ function Editor() {
         dispatch(setXSize(res.xSize));
         dispatch(setYSize(res.ySize));
         dispatch(setZSize(res.zSize));
-        dispatch(setRate(res.rate))
+        dispatch(setRate(res.rate));
+        dispatch(setScaleRate(res.scaleRate));
 
         setNiftiImage(res.niftiImage);
         setDrawImage(res.drawImage)
@@ -110,8 +111,8 @@ function Editor() {
   // 定义子组件样式
   const [viewStyle, setViewStyle] = useState({
     position: 'relative',
-    width: '100%',
-    height: '100%',
+    // width: '100%',
+    // height: '100%',
     overflow: 'hidden',
     // border: '1px solid #000',
     boxSize: 'border-box',

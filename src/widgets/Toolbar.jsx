@@ -136,15 +136,15 @@ const App = () => {
         onChange={(e)=>dispatch(setColor(e))}
         options={[
           {
-            value: 'red',
+            value: '#ff0000',
             label: 'Red',
           },
           {
-            value: 'blue',
+            value: '#0000ff',
             label: 'Blue',
           },
           {
-            value: 'green',
+            value: '#00ff00',
             label: 'Green',
           }
         ]}

@@ -8,6 +8,7 @@ export const modelSizeSlice = createSlice({
     ySize: 1,
     zSize: 1,
     rate: 1,
+    scaleRate: 1,
   },
   reducers: {
     setXSize: (state, action) => {
@@ -21,10 +22,13 @@ export const modelSizeSlice = createSlice({
     },
     setRate: (state, action) => {
       state.rate = action.payload
-    }
+    },
+    setScaleRate: (state, action) => {
+      state.scaleRate = action.payload
+    },
   }
 })
 
-export const { setXSize, setYSize, setZSize, setRate } = modelSizeSlice.actions
+export const { setXSize, setYSize, setZSize, setRate, setScaleRate } = modelSizeSlice.actions
 
 export default modelSizeSlice.reducer
