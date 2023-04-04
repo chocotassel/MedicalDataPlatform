@@ -109,7 +109,6 @@ function View(props) {
       }
       tempCtx.putImageData(imageData1, 0, 0);
       ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
-      
     }
   }, [props.niftiImage, tool.type, pointPos.x, pointPos.y, pointPos.z])
 

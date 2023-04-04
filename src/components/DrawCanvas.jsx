@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setX, setY, setZ } from '../store/modules/pointPosState';
 import { RGB } from '../utils/RGB';
 
-function CrossCanvas(props) {
+function DrawCanvas(props) {
   // props
   const viewMsg = props.viewMsg;
 
@@ -232,4 +232,4 @@ function CrossCanvas(props) {
   );
 }
 
-export default CrossCanvas;
+export default DrawCanvas;

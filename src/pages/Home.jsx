@@ -1,9 +1,14 @@
+import { useState, useRef } from 'react';
+import { Outlet,useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Layout, Menu, theme } from 'antd';
+
 import './Home.css'
 import User from '../components/User';
-import { Outlet,useNavigate } from 'react-router-dom';
 import Toolbar from '../widgets/Toolbar'
 import Editor from '../widgets/Editor';
+
+import { setScaleFactor } from '../store/modules/scaleFactorState';
 
 
 const { Header, Content, Footer } = Layout;
@@ -24,6 +29,52 @@ const App = () => {
         break
     }
   }
+
+  // redux
+  const scaleFactor = useSelector((state) => state.scaleFactor)
+  const dispatch = useDispatch();
+
+  // 变量
+  const [isResizing, setIsResizing] = useState(false);
+  const editorRef = useRef(null);
+  const initialSize = useRef({ width: 0, height: 0 });
+  const initialMousePosition = useRef({ x: 0, y: 0 });
+
+
+  // 拉动修改工作区大小
+  function handleMouseMove(e) {
+    if (!isResizing || !editorRef.current) return;
+
+    const dx = e.clientX - initialMousePosition.current.x;
+    const dy = e.clientY - initialMousePosition.current.y;
+
+    const ratio = initialSize.current.width / initialSize.current.height;
+
+    const newWidth = initialSize.current.width + dx;
+    const newHeight = newWidth / ratio;
+
+    editorRef.current.width = newWidth;
+    editorRef.current.height = newHeight;
+    editorRef.current.style.width = `${newWidth}px`;
+    editorRef.current.style.height = `${newHeight}px`;
+  }
+
+  function handleMouseDown(e) {
+    if (!editorRef.current) return;
+
+    initialSize.current = {
+      width: editorRef.current.width,
+      height: editorRef.current.height
+    };
+    initialMousePosition.current = { x: e.clientX, y: e.clientY };
+    setIsResizing(true);
+  };
+
+  function handleMouseUp(){
+    setIsResizing(false);
+  };
+
+
   return (
     <Layout className="layout">
       <Header id='components-layout-top'>
@@ -47,9 +98,32 @@ const App = () => {
             backgroundColor: 'F5F5F5'
           }}
         >
-          <Toolbar/>
+          <Toolbar />
           <Outlet/>
-          <Editor />
+          
+          {/* <div
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={() => setIsResizing(false)}
+            style={{
+              cursor: isResizing ? 'nwse-resize' : 'default',
+              userSelect: 'none'
+            }}
+          > */}
+            <Editor />
+            {/* <div
+              onMouseDown={handleMouseDown}
+              style={{
+                position: 'relative',
+                left: `${editorRef.current ? editorRef.current.width - 10 : 290}px`,
+                top: `${editorRef.current ? editorRef.current.height - 10 : 140}px`,
+                width: '10px',
+                height: '10px',
+                backgroundColor: 'black',
+                cursor: 'nwse-resize'
+              }}
+            />
+          </div> */}
         </div>
       </Content>
       <Footer

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RGB } from '/src/utils/RGB';
 
 
-function PolygonCanvas(props) {
+function RangingCanvas(props) {
   // props
   const viewMsg = props.viewMsg;
 
@@ -154,10 +154,10 @@ function PolygonCanvas(props) {
       onMouseUp={handleMouseUp}
       style={{ ...props.canvasStyle, display: tool.type == 4 ? 'block' : 'none' }}
     >
-      Your browser does not support the canvas element. PolygonCanvas
+      Your browser does not support the canvas element. RangingCanvas
     </canvas>
   )
 }
 
 
-export default PolygonCanvas
+export default RangingCanvas

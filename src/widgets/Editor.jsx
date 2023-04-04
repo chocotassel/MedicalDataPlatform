@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef  } from 'react'
 import * as nifti from 'nifti-reader-js';
 import n2a from '/src/utils/n2a.js'
 
@@ -106,6 +106,7 @@ function Editor() {
     `,
     gridGap: '10px',
     padding: '10px',
+    // border: '1px solid black',
   });
 
   // 定义子组件样式
@@ -120,7 +121,7 @@ function Editor() {
 
 
   return (
-    <div style={{...editorStyle}}>
+    <div style={{...editorStyle}} >
       <MainView viewStyle={viewStyle} offset={offset} />
       {/* <VtkDataView url={src} /> */}
       <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   />
