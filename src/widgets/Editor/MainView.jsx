@@ -13,7 +13,7 @@ function MainView(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const modelSize = useSelector((state) => state.modelSize);
   const tool = useSelector((state) => state.tool);
-  const scaleFactor = useSelector((state) => state.scaleFactor);
+  const scaleFactor = useSelector((state) => state.scaleFactor.value);
   const dispatch = useDispatch();
 
   // 引用
@@ -144,7 +144,7 @@ function MainView(props) {
       cancelAnimationFrame(requestRef.current);
       container.current.removeChild(renderer.domElement);
     };
-  }, [xSize, ySize, zSize, rate, props.offset]);
+  }, [xSize, ySize, zSize, rate, props.offset, scaleFactor]);
 
 
 

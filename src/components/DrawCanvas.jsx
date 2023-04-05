@@ -11,7 +11,7 @@ function DrawCanvas(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const tool = useSelector((state) => state.tool);
   const { rate } = useSelector((state) => state.modelSize);
-  const scaleFactor = useSelector((state) => state.scaleFactor);
+  const scaleFactor = useSelector((state) => state.scaleFactor.value);
   const dispatch = useDispatch();
 
 

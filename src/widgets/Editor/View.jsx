@@ -43,24 +43,22 @@ function View(props) {
 
 
   function handleScroll(event) {
-      switch (viewMsg.type) {
-        case 1:
-          dispatch(setX((pointPos.x + (event.deltaY > 0 ? 1 : -1)) < 0 ? 0 : (pointPos.x + (event.deltaY > 0 ? 1 : -1)) > viewMsg.depth - 1 ? viewMsg.depth - 1 : (pointPos.x + (event.deltaY > 0 ? 1 : -1))))
-          break;
-        case 2:
-          dispatch(setY((pointPos.y + (event.deltaY > 0 ? 1 : -1)) < 0 ? 0 : (pointPos.y + (event.deltaY > 0 ? 1 : -1)) > viewMsg.depth - 1 ? viewMsg.depth - 1 : (pointPos.y + (event.deltaY > 0 ? 1 : -1))))
-          break;
-        case 3:
-          dispatch(setZ((pointPos.z + (event.deltaY > 0 ? 1 : -1)) < 0 ? 0 : (pointPos.z + (event.deltaY > 0 ? 1 : -1)) > viewMsg.depth - 1 ? viewMsg.depth - 1 : (pointPos.z + (event.deltaY > 0 ? 1 : -1))))
-          break;
-        default:
-          console.log('error', viewMsg.type);
-          break;
-      }
-      event.preventDefault();
-    };
-
-
+    switch (viewMsg.type) {
+      case 1:
+        dispatch(setX((pointPos.x + (event.deltaY > 0 ? 1 : -1)) < 0 ? 0 : (pointPos.x + (event.deltaY > 0 ? 1 : -1)) > viewMsg.depth - 1 ? viewMsg.depth - 1 : (pointPos.x + (event.deltaY > 0 ? 1 : -1))))
+        break;
+      case 2:
+        dispatch(setY((pointPos.y + (event.deltaY > 0 ? 1 : -1)) < 0 ? 0 : (pointPos.y + (event.deltaY > 0 ? 1 : -1)) > viewMsg.depth - 1 ? viewMsg.depth - 1 : (pointPos.y + (event.deltaY > 0 ? 1 : -1))))
+        break;
+      case 3:
+        dispatch(setZ((pointPos.z + (event.deltaY > 0 ? 1 : -1)) < 0 ? 0 : (pointPos.z + (event.deltaY > 0 ? 1 : -1)) > viewMsg.depth - 1 ? viewMsg.depth - 1 : (pointPos.z + (event.deltaY > 0 ? 1 : -1))))
+        break;
+      default:
+        console.log('error', viewMsg.type);
+        break;
+    }
+    event.preventDefault();
+  };
 
 
   // 加载切片
@@ -74,18 +72,15 @@ function View(props) {
       const imageData1 = ctx.createImageData(width, height);
       imgRef.current.width = displayWidth;
       imgRef.current.height = displayHeight;
-      // console.log(viewMsg);
-
       const tempCanvas = document.createElement("canvas");
       tempCanvas.width = width;
       tempCanvas.height = height;
       const tempCtx = tempCanvas.getContext("2d");
 
-
       for (let a = 0; a < width; a++) {
         for (let b = 0; b < height; b++) {
           let value = null;
-          switch (viewMsg.type) {
+          switch (type) {
             case 1:
               value = niftiImage[pointPos.x][a][b];
               break;
@@ -110,13 +105,13 @@ function View(props) {
       tempCtx.putImageData(imageData1, 0, 0);
       ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
     }
-  }, [props.niftiImage, tool.type, pointPos.x, pointPos.y, pointPos.z])
+  }, [props.niftiImage, tool.type, pointPos.x, pointPos.y, pointPos.z, props.viewMsg.displayWidth, props.viewMsg.displayHeight])
 
 
 
   return (
     <div style={props.viewStyle}>
-      <CrossCanvas   drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} style={{display: 'none'}} />
+      <CrossCanvas   drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
       <DrawCanvas    drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} />
       <PolygonCanvas drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} setCanvasStyle={setCanvasStyle} />
       <RangingCanvas drawImage={props.drawImage} viewMsg={props.viewMsg} canvasStyle={canvasStyle} handleScroll={handleScroll} setCanvasStyle={setCanvasStyle} />

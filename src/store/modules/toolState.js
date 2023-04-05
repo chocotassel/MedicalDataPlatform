@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const toolSlice = createSlice({
   name: 'tool',
   initialState: {
-    type: 0,
+    type: -1,
     color: '#ff0000',
     size: 8,
     contrast: 'spring'

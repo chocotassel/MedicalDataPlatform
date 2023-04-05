@@ -17,7 +17,7 @@ function Editor() {
   // redux
   const pointPos = useSelector((state) => state.pointPos);
   const modelSize = useSelector((state) => state.modelSize);
-  const scaleFactor = useSelector((state) => state.scaleFactor);
+  const scaleFactor = useSelector((state) => state.scaleFactor.value);
   const dispatch = useDispatch();
 
   // const src = '/src/assets/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii'
@@ -89,9 +89,14 @@ function Editor() {
         setLeftViewMsg({  width: res.ySize, height: res.zSize, displayWidth: res.ySize * scaleFactor, displayHeight: res.zSize * scaleFactor * res.rate, type: 1, depth: res.xSize });
         setFrontViewMsg({ width: res.xSize, height: res.zSize, displayWidth: res.xSize * scaleFactor, displayHeight: res.zSize * scaleFactor * res.rate, type: 2, depth: res.ySize });
       })
-
     }
   }, [])
+
+  useEffect(() => {
+    setTopViewMsg(  prev => ({ ...prev, displayWidth: modelSize.xSize * scaleFactor, displayHeight: modelSize.ySize * scaleFactor }));
+    setLeftViewMsg( prev => ({ ...prev, displayWidth: modelSize.ySize * scaleFactor, displayHeight: modelSize.zSize * scaleFactor * modelSize.rate }));
+    setFrontViewMsg(prev => ({ ...prev, displayWidth: modelSize.xSize * scaleFactor, displayHeight: modelSize.zSize * scaleFactor * modelSize.rate }));
+  }, [scaleFactor, modelSize.xSize, modelSize.ySize, modelSize.zSize, modelSize.rate])
 
 // 定义样式，四宫格
   const [editorStyle, setEditorStyle] = useState({

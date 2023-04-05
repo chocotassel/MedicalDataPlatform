@@ -24,6 +24,6 @@ dist-ssr
 *.sw?
 
 # nifti
-*.nii
+# *.nii
 *.nii.gz
-*.obj
+# *.obj

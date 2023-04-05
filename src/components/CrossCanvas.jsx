@@ -10,7 +10,7 @@ function CrossCanvas(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const tool = useSelector((state) => state.tool);
   const { rate } = useSelector((state) => state.modelSize);
-  const scaleFactor = useSelector((state) => state.scaleFactor);
+  const scaleFactor = useSelector((state) => state.scaleFactor.value);
   const dispatch = useDispatch();
 
   const crossRef = useRef(null);
@@ -39,6 +39,7 @@ function CrossCanvas(props) {
         b = pointPos.y;
         break;
       default:
+        console.log("error viewMsg.type", viewMsg);
         break;
     }
     a = a * scaleFactor;
@@ -109,7 +110,7 @@ function CrossCanvas(props) {
     };
   }, [viewMsg, pointPos.x, pointPos.y, pointPos.z, tool.type]);
 
-
+  
   return (
     <canvas
       ref={crossRef}

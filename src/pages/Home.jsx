@@ -32,7 +32,7 @@ const App = () => {
   }
 
   // redux
-  const scaleFactor = useSelector((state) => state.scaleFactor)
+  const scaleFactor = useSelector((state) => state.scaleFactor.value)
   const dispatch = useDispatch();
 
   // 变量

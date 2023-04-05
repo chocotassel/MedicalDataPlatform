@@ -11,7 +11,7 @@ const App = () => {
   const { x, y, z } = useSelector((state) => state.pointPos)
   const { xSize, ySize, zSize } = useSelector((state) => state.modelSize)
   const { color, size, contrast } = useSelector((state) => state.tool)
-  const scaleFactor =useSelector((state) => state.scaleFactor)
+  const scaleFactor =useSelector((state) => state.scaleFactor.value)
   const dispatch = useDispatch();
   // DOM
   return (
