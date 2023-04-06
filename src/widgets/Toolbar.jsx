@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setType, setColor, setSize, setContrast } from '../store/modules/toolState';
 import { setX, setY, setZ } from '../store/modules/pointPosState';
 import { setScaleFactor } from '../store/modules/scaleFactorState'
+import { setObjectColor } from '../store/modules/objectState'
 import {Link} from 'react-router-dom';
   
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
   const { x, y, z } = useSelector((state) => state.pointPos)
   const { xSize, ySize, zSize } = useSelector((state) => state.modelSize)
   const { color, size, contrast } = useSelector((state) => state.tool)
+  const { color: objectColor } = useSelector((state) => state.object)
   const scaleFactor =useSelector((state) => state.scaleFactor.value)
   const dispatch = useDispatch();
   // DOM
@@ -222,6 +224,44 @@ const App = () => {
           }
         ]}
       />
+      <h3>模型</h3>
+      {/* 画笔颜色 */}
+      <div id='color' 
+        style={{
+        display: 'inline-block',
+        marginRight: 5,
+        backgroundColor: objectColor,
+        width: 10,
+        height: 10
+        }}>
+      </div>
+      <Select
+        defaultValue={objectColor}
+        style={{
+          width: 100,
+          marginRight: 10
+        }}
+        onChange={(e)=>dispatch(setObjectColor(e))}
+        options={[
+          {
+            value: '#000000',
+            label: 'Gray',
+          },
+          {
+            value: '#ff0000',
+            label: 'Red',
+          },
+          {
+            value: '#0000ff',
+            label: 'Blue',
+          },
+          {
+            value: '#00ff00',
+            label: 'Green',
+          }
+        ]}
+      />
+
       <h3>数据分析</h3>
       <span>器官数量:16</span>
       <span>直径x:16</span>

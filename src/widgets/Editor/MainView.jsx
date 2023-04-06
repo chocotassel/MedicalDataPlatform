@@ -16,6 +16,7 @@ function MainView(props) {
   const pointPos = useSelector((state) => state.pointPos);
   const modelSize = useSelector((state) => state.modelSize);
   const tool = useSelector((state) => state.tool);
+  const object = useSelector((state) => state.object);
   const scaleFactor = useSelector((state) => state.scaleFactor.value);
   const dispatch = useDispatch();
 
@@ -146,7 +147,7 @@ function MainView(props) {
 
     // 创建灯光
     // 环境光
-    var color = RGB.createWithHex(tool.color).toHexNumber();
+    var color = RGB.createWithHex(object.color).toHexNumber();
     var ambientLight = new THREE.AmbientLight(color, 1);
     ambientLight.position.set(xSize / 2, 0, zSize * rate / 2);
     scene.add(ambientLight);
@@ -181,7 +182,7 @@ function MainView(props) {
       cancelAnimationFrame(requestRef.current);
       container.current.removeChild(renderer.domElement);
     };
-  }, [xSize, ySize, zSize, rate, props.offset, scaleFactor, tool.color, src]);
+  }, [xSize, ySize, zSize, rate, props.offset, scaleFactor, tool.color, src, object.color]);
 
 
 

@@ -6,6 +6,8 @@ import modelSizeSlice from './modules/modelSizeState'
 import drawingSlice from './modules/drawingState'
 import scaleFactorSlice from './modules/scaleFactorState'
 import organState from './modules/organState'
+import objectState from './modules/objectState'
+
 
 export default configureStore({
   reducer: {
@@ -15,6 +17,7 @@ export default configureStore({
     modelSize: modelSizeSlice,
     drawing: drawingSlice,
     scaleFactor: scaleFactorSlice,
-    origin: organState
+    origin: organState,
+    object: objectState,
   }
 })
