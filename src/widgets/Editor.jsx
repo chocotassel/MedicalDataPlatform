@@ -13,15 +13,17 @@ import { setScaleFactor } from '../store/modules/scaleFactorState';
 
 
 
-function Editor() {
+function Editor(props) {
+  // props
+  const src = props.src;
+  const objSrc = props.objSrc
+
   // redux
   const pointPos = useSelector((state) => state.pointPos);
   const modelSize = useSelector((state) => state.modelSize);
   const scaleFactor = useSelector((state) => state.scaleFactor.value);
   const dispatch = useDispatch();
 
-  // const src = '/src/assets/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii'
-  const src = '/src/assets/submit/0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.nii/0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.nii'
   const isMountedRef = useRef(false);
 
   const [niftiImage, setNiftiImage] = useState(null);
@@ -127,7 +129,7 @@ function Editor() {
 
   return (
     <div style={{...editorStyle}} >
-      <MainView viewStyle={viewStyle} offset={offset} />
+      <MainView viewStyle={viewStyle} offset={offset} src={objSrc} />
       {/* <VtkDataView url={src} /> */}
       <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={topViewMsg}   />
       <View viewStyle={viewStyle} niftiImage={niftiImage} drawImage={drawImage} viewMsg={leftViewMsg}  />

@@ -10,6 +10,8 @@ import { RGB } from '../../utils/RGB';
 
 
 function MainView(props) {
+  // props
+  const src = props.src;
   // redux
   const pointPos = useSelector((state) => state.pointPos);
   const modelSize = useSelector((state) => state.modelSize);
@@ -41,7 +43,7 @@ function MainView(props) {
   const height = ySize * scaleFactor;
 
   // 模型
-  const src = '/public/objs/nii2mesh_0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.obj'
+  // const src = '/public/objs/nii2mesh_0f593c1e-4bb8-470f-a87b-fee3dbd3b3ed.obj'
 
 
   useEffect(() => {
