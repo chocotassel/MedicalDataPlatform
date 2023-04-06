@@ -21,7 +21,7 @@ const App = () => {
         <Radio.Button value={0}>拖动</Radio.Button>
         <Radio.Button value={1}>画笔</Radio.Button>
         <Radio.Button value={2}>橡皮擦</Radio.Button>
-        <Radio.Button value={3}><ExpandOutlined /></Radio.Button>
+        <Radio.Button value={3}>多边形</Radio.Button>
         <Radio.Button value={4}>尺子</Radio.Button>
       </Radio.Group>
       <h3>缩放</h3>
@@ -31,7 +31,7 @@ const App = () => {
               min={ 0 }
               max={ 100 }
               style={{ marginLeft: 20 }}
-              value={scaleFactor.value*100}
+              value={scaleFactor * 100}
               onChange={(e)=>dispatch(setScaleFactor(e/100))}
             />
           </Col>
@@ -43,7 +43,7 @@ const App = () => {
                 width: 60,
                 marginLeft: 20
               }}
-              value={scaleFactor.value*100}
+              value={scaleFactor * 100}
               onChange={(e)=>dispatch(setScaleFactor(e/100))}
             />
           </Col>
@@ -188,6 +188,10 @@ const App = () => {
         }}
         onChange={(e)=>dispatch(setContrast(e))}
         options={[
+          {
+            value: 'gray',
+            label: '灰度',
+          },
           {
             value: 'rainbow',
             label: '多彩',

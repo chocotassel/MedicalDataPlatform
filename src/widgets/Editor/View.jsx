@@ -94,7 +94,7 @@ function View(props) {
               break;
           }
           const alpha = 255;
-          const rgb = RGB.mapIntegerToColor(value, 'gray');
+          const rgb = RGB.mapIntegerToColor(value, tool.contrast);
 
           imageData1.data[(a + b * width) * 4 + 0] = rgb.r;
           imageData1.data[(a + b * width) * 4 + 1] = rgb.g;
@@ -105,7 +105,7 @@ function View(props) {
       tempCtx.putImageData(imageData1, 0, 0);
       ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
     }
-  }, [props.niftiImage, tool.type, pointPos.x, pointPos.y, pointPos.z, props.viewMsg.displayWidth, props.viewMsg.displayHeight])
+  }, [props.niftiImage, tool.type, tool.contrast, pointPos.x, pointPos.y, pointPos.z, props.viewMsg.displayWidth, props.viewMsg.displayHeight])
 
 
 
