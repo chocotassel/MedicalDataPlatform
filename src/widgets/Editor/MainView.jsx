@@ -55,7 +55,8 @@ function MainView(props) {
       0.1,
       10000
     );
-    camera.position.set(xSize, ySize, zSize * rate);
+    const cameraFactor = 0.8;
+    camera.position.set(xSize * cameraFactor, ySize * cameraFactor, zSize * rate * cameraFactor);
     camera.lookAt(new THREE.Vector3(x, y, z));
     cameraRef.current = camera;
     const renderer = new THREE.WebGLRenderer();
