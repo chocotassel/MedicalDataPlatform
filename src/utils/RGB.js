@@ -41,6 +41,21 @@ export class RGB {
     }
     return '#' + r + g + b;
   }
+  toHexNumber() {
+    let r = this.r.toString(16);
+    let g = this.g.toString(16);
+    let b = this.b.toString(16);
+    if (r.length < 2) {
+      r = '0' + r;
+    }
+    if (g.length < 2) {
+      g = '0' + g;
+    }
+    if (b.length < 2) {
+      b = '0' + b;
+    }
+    return parseInt(r + g + b, 16);
+  }
 
   toRGB() {
     return `rgb(${this.r}, ${this.g}, ${this.b})`;
