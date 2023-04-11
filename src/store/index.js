@@ -17,7 +17,7 @@ export default configureStore({
     modelSize: modelSizeSlice,
     drawing: drawingSlice,
     scaleFactor: scaleFactorSlice,
-    origin: organState,
+    organ: organState,
     object: objectState,
   }
 })

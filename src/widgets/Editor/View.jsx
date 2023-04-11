@@ -15,6 +15,7 @@ function View(props) {
   // redux
   const pointPos = useSelector((state) => state.pointPos);
   const tool = useSelector((state) => state.tool);
+  const organ = useSelector((state) => state.organ.value);
   const dispatch = useDispatch();
 
 
@@ -94,6 +95,7 @@ function View(props) {
               break;
           }
           const alpha = 255;
+          value = isShow(value);
           const rgb = RGB.mapIntegerToColor(value, tool.contrast);
 
           imageData1.data[(a + b * width) * 4 + 0] = rgb.r;
@@ -105,8 +107,14 @@ function View(props) {
       tempCtx.putImageData(imageData1, 0, 0);
       ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, displayWidth, displayHeight);
     }
-  }, [props.niftiImage, tool.type, tool.contrast, pointPos.x, pointPos.y, pointPos.z, props.viewMsg.displayWidth, props.viewMsg.displayHeight])
+  }, [props.niftiImage, tool.type, tool.contrast, pointPos.x, pointPos.y, pointPos.z, props.viewMsg.displayWidth, props.viewMsg.displayHeight, 
+    organ[0], organ[1], organ[2], organ[3], organ[4], organ[5], organ[6], organ[7], organ[8], organ[9], organ[10], organ[11], organ[12], organ[13], organ[14], organ[15]])
 
+
+  // 判断当前器官是否展示
+  function isShow(value) {
+    return organ[value] ? value : 0;
+  }
 
 
   return (
